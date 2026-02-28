@@ -128,17 +128,20 @@ export default function RootLayout({
               {/* Logo */}
               <div style={{ marginBottom: '40px' }}>
                 <div style={{
-                  width: '60px',
-                  height: '60px',
-                  background: 'linear-gradient(135deg, #fbbf24, #f59e0b)',
-                  borderRadius: '50%',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  margin: '0 auto 20px',
-                  fontSize: '24px'
+                  margin: '0 auto 20px'
                 }}>
-                  👑
+                  <img 
+                    src="/nxt-leads-logo-circle.png" 
+                    alt="Nxt Leads"
+                    style={{
+                      width: '80px',
+                      height: 'auto',
+                      filter: 'drop-shadow(0 10px 25px rgba(251, 191, 36, 0.3))'
+                    }}
+                  />
                 </div>
                 <h1 style={{
                   fontSize: '32px',

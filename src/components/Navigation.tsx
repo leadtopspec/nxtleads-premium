@@ -49,22 +49,13 @@ export default function Navigation() {
           {/* Logo */}
           <Link 
             href="/" 
-            className="flex items-center gap-3 group"
+            className="flex items-center group hover:scale-105 transition-all duration-300"
           >
-            <div className="relative">
-              <div className="w-10 h-10 bg-gradient-to-br from-gold-400 via-gold-500 to-gold-600 rounded-xl flex items-center justify-center shadow-lg shadow-gold-500/25 group-hover:shadow-gold-500/50 transition-all duration-300">
-                <span className="text-navy-950 font-bold text-lg">N</span>
-              </div>
-              <div className="absolute -inset-1 bg-gradient-to-r from-gold-400 to-gold-600 rounded-xl blur opacity-30 group-hover:opacity-50 transition-opacity"></div>
-            </div>
-            <div className="hidden sm:block">
-              <div className="text-xl font-bold text-white group-hover:text-gold-400 transition-colors">
-                Nxt<span className="text-gradient">Leads</span>
-              </div>
-              <div className="text-xs text-navy-400 font-medium">
-                Premium • Exclusive • Guaranteed
-              </div>
-            </div>
+            <img 
+              src="/nxt-leads-logo-main.png" 
+              alt="Nxt Leads - Premium Lead Generation"
+              className="h-8 w-auto md:h-10 filter drop-shadow-lg group-hover:drop-shadow-xl transition-all duration-300"
+            />
           </Link>
 
           {/* Desktop Navigation */}

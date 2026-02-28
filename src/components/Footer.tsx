@@ -108,18 +108,12 @@ export default function Footer() {
         <div className="grid gap-12 lg:grid-cols-6">
           {/* Brand Section */}
           <div className="lg:col-span-2">
-            <Link href="/" className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 bg-gradient-to-br from-gold-400 via-gold-500 to-gold-600 rounded-xl flex items-center justify-center shadow-lg shadow-gold-500/25">
-                <span className="text-navy-950 font-bold text-xl">N</span>
-              </div>
-              <div>
-                <div className="text-2xl font-bold text-white">
-                  Nxt<span className="text-gradient">Leads</span>
-                </div>
-                <div className="text-sm text-navy-400 font-medium">
-                  Premium • Exclusive • Guaranteed
-                </div>
-              </div>
+            <Link href="/" className="flex items-center mb-6 group">
+              <img 
+                src="/nxt-leads-logo-main.png" 
+                alt="Nxt Leads - Premium Lead Generation"
+                className="h-10 w-auto filter drop-shadow-lg group-hover:drop-shadow-xl transition-all duration-300"
+              />
             </Link>
             
             <p className="text-navy-300 mb-6 leading-relaxed">
