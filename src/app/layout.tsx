@@ -148,8 +148,8 @@ export default function RootLayout({
                     <div className="text-slate-300 text-sm">Upgrading AI scoring algorithms for 20%+ close rates</div>
                   </div>
                   <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
-                    <div className="text-blue-400 text-lg font-semibold mb-2">Speed Optimization</div>
-                    <div className="text-slate-300 text-sm">Reducing lead delivery to under 5 minutes</div>
+                    <div className="text-blue-400 text-lg font-semibold mb-2">Advanced Filtering</div>
+                    <div className="text-slate-300 text-sm">Enhanced pre-qualification to eliminate tire-kickers</div>
                   </div>
                 </div>
                 
