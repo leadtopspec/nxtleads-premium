@@ -101,111 +101,182 @@ export default function RootLayout({
     return (
       <html lang="en">
         <head>
-          <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-          <meta name="format-detection" content="telephone=no" />
-          <style dangerouslySetInnerHTML={{
-            __html: `
-              * { box-sizing: border-box; }
-              html, body { margin: 0; padding: 0; height: 100%; overflow-x: hidden; }
-              .maintenance-bg { 
-                background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%); 
-                min-height: 100vh; 
-                min-height: 100dvh; 
-              }
-            `
-          }} />
+          <meta charSet="utf-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <title>Nxt Leads - System Maintenance</title>
         </head>
-        <body className="maintenance-bg">
-          <div className="min-h-screen min-h-[100dvh] flex items-center justify-center px-4 py-8 relative">
-            {/* Background Pattern - Simplified for mobile */}
-            <div className="absolute inset-0 opacity-5" 
-                 style={{
-                   backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)',
-                   backgroundSize: '40px 40px'
-                 }}></div>
-            
-            <div className="w-full max-w-2xl mx-auto text-center relative z-10">
-              {/* Elite Branding */}
-              <div className="mb-8 sm:mb-12">
-                <div className="flex items-center justify-center mb-6">
-                  <svg className="w-16 h-16 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2L3 9v10c0 5.55 3.84 9.37 9 10 5.16-.63 9-4.45 9-10V9l-9-7z"/>
-                  </svg>
+        <body style={{
+          margin: 0,
+          padding: 0,
+          background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)',
+          minHeight: '100vh',
+          fontFamily: 'system-ui, -apple-system, sans-serif',
+          color: 'white'
+        }}>
+          <div style={{
+            minHeight: '100vh',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '20px'
+          }}>
+            <div style={{
+              maxWidth: '600px',
+              width: '100%',
+              textAlign: 'center'
+            }}>
+              {/* Logo */}
+              <div style={{ marginBottom: '40px' }}>
+                <div style={{
+                  width: '60px',
+                  height: '60px',
+                  background: 'linear-gradient(135deg, #fbbf24, #f59e0b)',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  margin: '0 auto 20px',
+                  fontSize: '24px'
+                }}>
+                  👑
                 </div>
-                <h1 className="text-3xl sm:text-5xl font-bold text-white mb-3 tracking-tight">
+                <h1 style={{
+                  fontSize: '32px',
+                  fontWeight: 'bold',
+                  margin: '0 0 10px',
+                  letterSpacing: '-1px'
+                }}>
                   Nxt Leads
                 </h1>
-                <div className="w-24 h-1 bg-gradient-to-r from-yellow-400 to-amber-500 mx-auto mb-3"></div>
-                <p className="text-slate-300 text-base sm:text-lg font-medium">
+                <div style={{
+                  width: '80px',
+                  height: '3px',
+                  background: 'linear-gradient(90deg, #fbbf24, #f59e0b)',
+                  margin: '0 auto 15px'
+                }}></div>
+                <p style={{
+                  fontSize: '16px',
+                  margin: 0,
+                  color: '#cbd5e1'
+                }}>
                   Premium Lead Generation Platform
                 </p>
               </div>
 
-              {/* Elite Maintenance Card */}
-              <div className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 sm:p-12 border border-white/10 shadow-2xl">
-                {/* Status Icon */}
-                <div className="w-20 h-20 bg-gradient-to-r from-yellow-400 to-amber-500 rounded-full flex items-center justify-center mx-auto mb-8">
-                  <svg className="w-10 h-10 text-slate-900 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
+              {/* Main Card */}
+              <div style={{
+                background: 'rgba(255, 255, 255, 0.05)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                borderRadius: '16px',
+                padding: '40px 30px',
+                backdropFilter: 'blur(10px)'
+              }}>
+                {/* Spinning Icon */}
+                <div style={{
+                  width: '60px',
+                  height: '60px',
+                  background: 'linear-gradient(135deg, #fbbf24, #f59e0b)',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  margin: '0 auto 30px',
+                  fontSize: '24px',
+                  animation: 'spin 2s linear infinite'
+                }}>
+                  ⚙️
                 </div>
                 
-                <h2 className="text-2xl sm:text-3xl font-bold text-white mb-6">
+                <h2 style={{
+                  fontSize: '24px',
+                  fontWeight: 'bold',
+                  margin: '0 0 20px',
+                  color: 'white'
+                }}>
                   Elite System Enhancement
                 </h2>
                 
-                <p className="text-slate-300 text-lg sm:text-xl mb-8 leading-relaxed">
+                <p style={{
+                  fontSize: '18px',
+                  lineHeight: '1.6',
+                  color: '#cbd5e1',
+                  margin: '0 0 30px'
+                }}>
                   We're upgrading our premium lead generation infrastructure to deliver even higher quality prospects to our elite agents.
                 </p>
                 
-                {/* Enhancement Details */}
-                <div className="grid md:grid-cols-2 gap-6 mb-8">
-                  <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
-                    <div className="text-emerald-400 text-lg font-semibold mb-2">Quality Enhancement</div>
-                    <div className="text-slate-300 text-sm">Upgrading AI scoring algorithms for 20%+ close rates</div>
-                  </div>
-                  <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
-                    <div className="text-blue-400 text-lg font-semibold mb-2">Advanced Filtering</div>
-                    <div className="text-slate-300 text-sm">Enhanced pre-qualification to eliminate tire-kickers</div>
-                  </div>
-                </div>
-                
-                <div className="bg-gradient-to-r from-yellow-400/10 to-amber-500/10 rounded-xl p-6 mb-8 border border-yellow-400/20">
-                  <p className="text-yellow-200 font-medium text-lg">
-                    🚀 Expected online: <span className="text-white font-bold">Shortly</span>
+                {/* Status */}
+                <div style={{
+                  background: 'linear-gradient(90deg, rgba(251, 191, 36, 0.1), rgba(245, 158, 11, 0.1))',
+                  border: '1px solid rgba(251, 191, 36, 0.2)',
+                  borderRadius: '12px',
+                  padding: '20px',
+                  marginBottom: '30px'
+                }}>
+                  <p style={{
+                    fontSize: '16px',
+                    fontWeight: '500',
+                    margin: '0 0 8px',
+                    color: '#fde68a'
+                  }}>
+                    🚀 Expected online: <strong style={{ color: 'white' }}>Shortly</strong>
                   </p>
-                  <p className="text-yellow-300/80 text-sm mt-2">
+                  <p style={{
+                    fontSize: '14px',
+                    margin: 0,
+                    color: '#fde68a',
+                    opacity: 0.8
+                  }}>
                     Your elite agent dashboard will be even more powerful
                   </p>
                 </div>
 
-                {/* Elite Contact */}
-                <div className="border-t border-slate-700/50 pt-8">
-                  <p className="text-slate-400 text-sm mb-4">
+                {/* Contact */}
+                <div style={{
+                  borderTop: '1px solid rgba(148, 163, 184, 0.3)',
+                  paddingTop: '20px'
+                }}>
+                  <p style={{
+                    fontSize: '14px',
+                    margin: '0 0 15px',
+                    color: '#94a3b8'
+                  }}>
                     Elite Agent Support & Urgent Inquiries
                   </p>
-                  <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-sm">
-                    <div className="text-slate-300">
-                      <span className="text-yellow-400 font-medium">Email:</span> support@nxtleads.org
-                    </div>
-                    <div className="hidden sm:block text-slate-600">|</div>
-                    <div className="text-slate-300">
-                      <span className="text-yellow-400 font-medium">Status:</span> Upgrading lead quality systems
-                    </div>
-                  </div>
+                  <p style={{
+                    fontSize: '14px',
+                    margin: 0,
+                    color: '#cbd5e1'
+                  }}>
+                    <span style={{ color: '#fbbf24', fontWeight: '500' }}>Email:</span> support@nxtleads.org<br />
+                    <span style={{ color: '#fbbf24', fontWeight: '500' }}>Status:</span> Upgrading lead quality systems
+                  </p>
                 </div>
               </div>
 
-              {/* Elite Footer */}
-              <div className="mt-12 text-center">
-                <p className="text-slate-400 text-sm leading-relaxed">
-                  Thank you for choosing <span className="text-white font-semibold">Nxt Leads</span><br />
-                  <span className="text-yellow-400">The Premium Choice for Elite Insurance Agents</span>
+              {/* Footer */}
+              <div style={{ marginTop: '40px' }}>
+                <p style={{
+                  fontSize: '14px',
+                  margin: 0,
+                  color: '#94a3b8',
+                  lineHeight: '1.5'
+                }}>
+                  Thank you for choosing <span style={{ color: 'white', fontWeight: '600' }}>Nxt Leads</span><br />
+                  <span style={{ color: '#fbbf24' }}>The Premium Choice for Elite Insurance Agents</span>
                 </p>
               </div>
             </div>
           </div>
+          
+          <style dangerouslySetInnerHTML={{
+            __html: `
+              @keyframes spin {
+                from { transform: rotate(0deg); }
+                to { transform: rotate(360deg); }
+              }
+            `
+          }} />
         </body>
       </html>
     )
