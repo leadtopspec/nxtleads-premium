@@ -94,6 +94,40 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Simple maintenance mode - change this to 'true' to enable maintenance
+  const maintenanceMode = process.env.NEXT_PUBLIC_MAINTENANCE === 'true'
+  
+  if (maintenanceMode) {
+    return (
+      <html lang="en">
+        <body className="bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900">
+          <div className="min-h-screen flex items-center justify-center px-4">
+            <div className="max-w-md mx-auto text-center">
+              <div className="mb-8">
+                <h1 className="text-4xl font-bold text-white mb-2">Nxt Leads</h1>
+                <div className="w-20 h-1 bg-blue-400 mx-auto"></div>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-8 border border-white/20">
+                <h2 className="text-2xl font-semibold text-white mb-4">
+                  System Maintenance
+                </h2>
+                <p className="text-blue-100 text-lg mb-4">
+                  We're currently upgrading our premium lead generation platform to serve you better.
+                </p>
+                <p className="text-blue-200 text-sm">
+                  Expected back online: <strong>Shortly</strong>
+                </p>
+                <div className="mt-6 text-blue-300 text-sm">
+                  Contact: support@nxtleads.org
+                </div>
+              </div>
+            </div>
+          </div>
+        </body>
+      </html>
+    )
+  }
+  
   return (
     <html lang="en" className="scroll-smooth">
       <head>
