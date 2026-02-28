@@ -3,6 +3,7 @@ import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import FacebookPixel from "@/components/FacebookPixel";
 import { AuthProvider } from '@/contexts/AuthContext';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 const inter = Inter({
   subsets: ["latin"],
@@ -319,6 +320,7 @@ export default function RootLayout({
         <AuthProvider>
           <FacebookPixel />
           {children}
+          <SpeedInsights />
         </AuthProvider>
       </body>
     </html>
