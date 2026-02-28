@@ -100,31 +100,49 @@ export default function RootLayout({
   if (maintenanceMode) {
     return (
       <html lang="en">
-        <body className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-          <div className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden">
-            {/* Background Pattern */}
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,_white_1px,_transparent_0)] opacity-5" 
-                 style={{backgroundSize: '40px 40px'}}></div>
+        <head>
+          <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+          <meta name="format-detection" content="telephone=no" />
+          <style dangerouslySetInnerHTML={{
+            __html: `
+              * { box-sizing: border-box; }
+              html, body { margin: 0; padding: 0; height: 100%; overflow-x: hidden; }
+              .maintenance-bg { 
+                background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%); 
+                min-height: 100vh; 
+                min-height: 100dvh; 
+              }
+            `
+          }} />
+        </head>
+        <body className="maintenance-bg">
+          <div className="min-h-screen min-h-[100dvh] flex items-center justify-center px-4 py-8 relative">
+            {/* Background Pattern - Simplified for mobile */}
+            <div className="absolute inset-0 opacity-5" 
+                 style={{
+                   backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)',
+                   backgroundSize: '40px 40px'
+                 }}></div>
             
-            <div className="max-w-2xl mx-auto text-center relative z-10">
+            <div className="w-full max-w-2xl mx-auto text-center relative z-10">
               {/* Elite Branding */}
-              <div className="mb-12">
+              <div className="mb-8 sm:mb-12">
                 <div className="flex items-center justify-center mb-6">
                   <svg className="w-16 h-16 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 2L3 9v10c0 5.55 3.84 9.37 9 10 5.16-.63 9-4.45 9-10V9l-9-7z"/>
                   </svg>
                 </div>
-                <h1 className="text-5xl font-bold text-white mb-3 tracking-tight">
+                <h1 className="text-3xl sm:text-5xl font-bold text-white mb-3 tracking-tight">
                   Nxt Leads
                 </h1>
                 <div className="w-24 h-1 bg-gradient-to-r from-yellow-400 to-amber-500 mx-auto mb-3"></div>
-                <p className="text-slate-300 text-lg font-medium">
+                <p className="text-slate-300 text-base sm:text-lg font-medium">
                   Premium Lead Generation Platform
                 </p>
               </div>
 
               {/* Elite Maintenance Card */}
-              <div className="bg-white/5 backdrop-blur-xl rounded-2xl p-12 border border-white/10 shadow-2xl">
+              <div className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 sm:p-12 border border-white/10 shadow-2xl">
                 {/* Status Icon */}
                 <div className="w-20 h-20 bg-gradient-to-r from-yellow-400 to-amber-500 rounded-full flex items-center justify-center mx-auto mb-8">
                   <svg className="w-10 h-10 text-slate-900 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -133,11 +151,11 @@ export default function RootLayout({
                   </svg>
                 </div>
                 
-                <h2 className="text-3xl font-bold text-white mb-6">
+                <h2 className="text-2xl sm:text-3xl font-bold text-white mb-6">
                   Elite System Enhancement
                 </h2>
                 
-                <p className="text-slate-300 text-xl mb-8 leading-relaxed">
+                <p className="text-slate-300 text-lg sm:text-xl mb-8 leading-relaxed">
                   We're upgrading our premium lead generation infrastructure to deliver even higher quality prospects to our elite agents.
                 </p>
                 
