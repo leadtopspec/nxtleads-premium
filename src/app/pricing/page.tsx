@@ -1,327 +1,603 @@
+'use client';
+
+
 import Link from "next/link";
+import Navigation from "@/components/Navigation";
+import Footer from "@/components/Footer";
+import { Crown, Star, Shield, TrendingUp, CheckCircle, DollarSign, Users, Clock, Award } from "lucide-react";
+
+interface LeadPackage {
+  name: string;
+  leadCount: number;
+  pricePerLead: number;
+  originalPricePerLead?: number;
+  totalPrice: number;
+  originalTotalPrice?: number;
+  description: string;
+  features: string[];
+  badge?: string;
+  popular?: boolean;
+  savings?: string;
+  cta: string;
+}
+
+const leadPackages: LeadPackage[] = [
+  {
+    name: "Trial Pack",
+    leadCount: 5,
+    pricePerLead: 32,
+    totalPrice: 160,
+    description: "Test our lead quality across all 4 verticals",
+    features: [
+      "5 exclusive life insurance leads",
+      "Mix of IUL, Final Expense, Mortgage Protection & Trucker",
+      "100% exclusive (never shared)",
+      "90+ quality score guarantee", 
+      "15-minute delivery promise",
+      "Basic lead analytics",
+      "Email support",
+      "Quality guarantee included"
+    ],
+    cta: "Start Trial"
+  },
+  {
+    name: "Growth Pack",
+    leadCount: 25,
+    pricePerLead: 28,
+    originalPricePerLead: 32,
+    totalPrice: 700,
+    originalTotalPrice: 800,
+    description: "Most popular for consistent multi-vertical flow",
+    features: [
+      "25 exclusive life insurance leads",
+      "Choose your preferred lead types",
+      "Priority 10-minute delivery",
+      "Advanced lead scoring & filters",
+      "Lead performance analytics by vertical",
+      "Phone & email support", 
+      "CRM integration ready",
+      "30-day quality guarantee"
+    ],
+    popular: true,
+    badge: "Most Popular", 
+    savings: "Save $100",
+    cta: "Get Started"
+  },
+  {
+    name: "Scale Pack",
+    leadCount: 50,
+    pricePerLead: 25,
+    originalPricePerLead: 32,
+    totalPrice: 1250,
+    originalTotalPrice: 1600,
+    description: "Serious agents scaling across all verticals",
+    features: [
+      "50 exclusive life insurance leads",
+      "Custom vertical distribution ratios",
+      "Instant 5-minute delivery",
+      "Premium lead quality (95+ scores)",
+      "Advanced analytics & reporting",
+      "Dedicated phone support",
+      "Custom lead preferences by type",
+      "Priority customer success"
+    ],
+    savings: "Save $350",
+    cta: "Scale Now"
+  },
+  {
+    name: "Elite Pack", 
+    leadCount: 100,
+    pricePerLead: 22,
+    originalPricePerLead: 32,
+    totalPrice: 2200,
+    originalTotalPrice: 3200,
+    description: "Maximum volume across premium verticals",
+    features: [
+      "100 exclusive life insurance leads",
+      "Highest-tier leads in all 4 verticals",
+      "Immediate delivery (<2 minutes)",
+      "Platinum quality (96+ scores)",
+      "Dedicated success manager",
+      "Custom lead sourcing by vertical",
+      "White-glove onboarding",
+      "Advanced CRM integration"
+    ],
+    savings: "Save $1,000",
+    cta: "Contact Sales"
+  }
+];
+
+const comparisonData = [
+  {
+    metric: "Price per Lead",
+    trial: "$32",
+    growth: "$28",
+    scale: "$25", 
+    elite: "$22"
+  },
+  {
+    metric: "Quality Score",
+    trial: "90+",
+    growth: "92+",
+    scale: "95+",
+    elite: "96+"
+  },
+  {
+    metric: "Delivery Time",
+    trial: "15 min",
+    growth: "10 min", 
+    scale: "5 min",
+    elite: "2 min"
+  },
+  {
+    metric: "Expected Close Rate",
+    trial: "15-17%",
+    growth: "16-18%",
+    scale: "17-19%", 
+    elite: "18-20%"
+  },
+  {
+    metric: "Support Level",
+    trial: "Email",
+    growth: "Phone & Email",
+    scale: "Priority Phone",
+    elite: "Dedicated Manager"
+  }
+];
 
 export default function PricingPage() {
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-      {/* Header */}
-      <header className="border-b border-white/10 bg-black/20 backdrop-blur-sm">
-        <div className="container mx-auto flex items-center justify-between px-6 py-4">
-          <Link href="/" className="text-2xl font-bold text-white">
-            Elite<span className="text-purple-400">Leads</span> Pro
-          </Link>
-          <nav className="hidden space-x-8 md:flex">
-            <Link href="/" className="text-gray-300 hover:text-white">Home</Link>
-            <Link href="/leads" className="text-gray-300 hover:text-white">Browse Leads</Link>
-            <Link href="/pricing" className="text-purple-400">Pricing</Link>
-            <Link href="#contact" className="text-gray-300 hover:text-white">Contact</Link>
-          </nav>
-          <button className="rounded-lg bg-purple-600 px-6 py-2 text-white hover:bg-purple-700">
-            Agent Portal
-          </button>
-        </div>
-      </header>
-
-      <div className="container mx-auto px-6 py-12">
-        {/* Hero Section */}
-        <div className="text-center mb-16">
-          <h1 className="text-4xl font-bold text-white mb-4">
-            Transparent Pricing. Premium Results.
-          </h1>
-          <p className="text-xl text-gray-300 mb-6">
-            Every lead is exclusive. Every price includes our 300% ROI guarantee.
-          </p>
-          <div className="inline-flex items-center gap-2 bg-green-600/20 px-4 py-2 rounded-lg text-green-400">
-            ✓ No contracts • No minimums • No setup fees
+    <div className="min-h-screen bg-slate-950">
+      <Navigation />
+      
+      {/* Hero Section */}
+      <section className="relative overflow-hidden pt-32 pb-16">
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-navy-950"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-gold-500/5 to-transparent"></div>
+        
+        <div className="relative container mx-auto px-6 text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-gold-500/20 border border-gold-500/30 rounded-full text-gold-400 text-sm font-semibold mb-8">
+            <Crown className="w-4 h-4" />
+            <span>Premium Lead Packages</span>
           </div>
-        </div>
-
-        {/* Main Pricing Grid */}
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4 mb-16">
           
-          {/* Final Expense */}
-          <div className="rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 p-6">
-            <div className="text-center mb-6">
-              <h3 className="text-xl font-bold text-white mb-2">Final Expense</h3>
-              <div className="text-3xl font-bold text-purple-400 mb-1">$25</div>
-              <div className="text-gray-400 text-sm">per lead</div>
+          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
+            Premium <span className="text-gradient bg-gradient-to-r from-gold-400 via-gold-500 to-gold-600 bg-clip-text text-transparent">Life Insurance</span> Leads
+          </h1>
+          
+          <p className="text-xl text-slate-300 max-w-3xl mx-auto mb-12">
+            High-converting leads across <strong className="text-gold-400">4 premium verticals</strong>: IUL, Final Expense, Mortgage Protection & Trucker Insurance. 
+            Every lead is <strong className="text-green-400">100% exclusive</strong> with our 
+            <strong className="text-blue-400">elite quality guarantee</strong>.
+          </p>
+
+          {/* Key Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+            <div className="glass rounded-xl p-4">
+              <div className="text-2xl font-bold text-emerald-400 mb-1">18.3%</div>
+              <div className="text-slate-400 text-sm">Avg Close Rate</div>
             </div>
-            
-            <ul className="space-y-3 mb-6 text-sm">
-              <li className="flex items-center gap-2 text-gray-300">
-                <span className="text-green-400">✓</span>
-                Ages 50-65+
-              </li>
-              <li className="flex items-center gap-2 text-gray-300">
-                <span className="text-green-400">✓</span>
-                $50-200/month premium
-              </li>
-              <li className="flex items-center gap-2 text-gray-300">
-                <span className="text-green-400">✓</span>
-                Exclusive to you only
-              </li>
-              <li className="flex items-center gap-2 text-gray-300">
-                <span className="text-green-400">✓</span>
-                &lt;5min fresh delivery
-              </li>
-              <li className="flex items-center gap-2 text-gray-300">
-                <span className="text-green-400">✓</span>
-                300% ROI guarantee
-              </li>
-            </ul>
-            
-            <button className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg">
-              Order Now
-            </button>
+            <div className="glass rounded-xl p-4">
+              <div className="text-2xl font-bold text-gold-400 mb-1">4</div>
+              <div className="text-slate-400 text-sm">Lead Types</div>
+            </div>
+            <div className="glass rounded-xl p-4">
+              <div className="text-2xl font-bold text-blue-400 mb-1">90+</div>
+              <div className="text-slate-400 text-sm">Quality Score</div>
+            </div>
+            <div className="glass rounded-xl p-4">
+              <div className="text-2xl font-bold text-purple-400 mb-1">$22-35</div>
+              <div className="text-slate-400 text-sm">Per Lead</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Lead Types Section */}
+      <section className="py-20 bg-gradient-to-r from-slate-900 to-slate-950">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-white mb-4">
+              Premium <span className="text-gold-400">Life Insurance</span> Lead Types
+            </h2>
+            <p className="text-xl text-slate-400 max-w-3xl mx-auto">
+              Choose from 4 high-converting verticals, each with exclusive leads and premium quality scoring
+            </p>
           </div>
 
-          {/* Term Life */}
-          <div className="rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 p-6">
-            <div className="text-center mb-6">
-              <h3 className="text-xl font-bold text-white mb-2">Term Life</h3>
-              <div className="text-3xl font-bold text-purple-400 mb-1">$27</div>
-              <div className="text-gray-400 text-sm">per lead</div>
-            </div>
-            
-            <ul className="space-y-3 mb-6 text-sm">
-              <li className="flex items-center gap-2 text-gray-300">
-                <span className="text-green-400">✓</span>
-                Ages 25-65
-              </li>
-              <li className="flex items-center gap-2 text-gray-300">
-                <span className="text-green-400">✓</span>
-                $100-500/month premium
-              </li>
-              <li className="flex items-center gap-2 text-gray-300">
-                <span className="text-green-400">✓</span>
-                Mortgage protection focus
-              </li>
-              <li className="flex items-center gap-2 text-gray-300">
-                <span className="text-green-400">✓</span>
-                Family protection angle
-              </li>
-              <li className="flex items-center gap-2 text-gray-300">
-                <span className="text-green-400">✓</span>
-                High conversion rate
-              </li>
-            </ul>
-            
-            <button className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg">
-              Order Now
-            </button>
-          </div>
-
-          {/* IUL - Most Popular */}
-          <div className="rounded-xl bg-gradient-to-b from-purple-600/20 to-purple-800/20 border-2 border-purple-400 p-6 relative">
-            <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-              <div className="bg-purple-400 text-black px-3 py-1 rounded-full text-xs font-bold">
-                MOST POPULAR
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+            {/* IUL Elite Premium */}
+            <div className="glass rounded-2xl p-6 hover:border-gold-500/30 transition-all duration-300 hover:scale-105">
+              <div className="text-center mb-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-gold-400 to-gold-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <Crown className="h-8 w-8 text-navy-950" />
+                </div>
+                <h3 className="text-xl font-bold text-white mb-2">IUL Elite Premium</h3>
+                <div className="text-2xl font-bold text-gold-400 mb-1">$28-35</div>
+                <div className="text-slate-400 text-sm">per lead</div>
+              </div>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Age Range:</span>
+                  <span className="text-white">25-55</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Income:</span>
+                  <span className="text-white">$75K+</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Close Rate:</span>
+                  <span className="text-green-400">22-25%</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Avg Premium:</span>
+                  <span className="text-white">$4,200</span>
+                </div>
+              </div>
+              <div className="mt-4 p-3 bg-gold-900/20 border border-gold-400/30 rounded-lg">
+                <div className="text-gold-400 text-xs font-semibold">HIGHEST COMMISSIONS</div>
+                <div className="text-slate-300 text-xs">Premium wealthy clients seeking tax advantages</div>
               </div>
             </div>
-            
-            <div className="text-center mb-6">
-              <h3 className="text-xl font-bold text-white mb-2">IUL</h3>
-              <div className="text-3xl font-bold text-purple-400 mb-1">$30</div>
-              <div className="text-gray-400 text-sm">per lead</div>
+
+            {/* Final Expense Elite */}
+            <div className="glass rounded-2xl p-6 hover:border-blue-500/30 transition-all duration-300 hover:scale-105">
+              <div className="text-center mb-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <Shield className="h-8 w-8 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-white mb-2">Final Expense Elite</h3>
+                <div className="text-2xl font-bold text-blue-400 mb-1">$22-28</div>
+                <div className="text-slate-400 text-sm">per lead</div>
+              </div>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Age Range:</span>
+                  <span className="text-white">50-75</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Income:</span>
+                  <span className="text-white">$35K+</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Close Rate:</span>
+                  <span className="text-green-400">18-22%</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Avg Premium:</span>
+                  <span className="text-white">$2,800</span>
+                </div>
+              </div>
+              <div className="mt-4 p-3 bg-blue-900/20 border border-blue-400/30 rounded-lg">
+                <div className="text-blue-400 text-xs font-semibold">HIGHEST VOLUME</div>
+                <div className="text-slate-300 text-xs">Seniors seeking burial/final expense coverage</div>
+              </div>
             </div>
-            
-            <ul className="space-y-3 mb-6 text-sm">
-              <li className="flex items-center gap-2 text-gray-300">
-                <span className="text-green-400">✓</span>
-                Ages 25-65
-              </li>
-              <li className="flex items-center gap-2 text-gray-300">
-                <span className="text-green-400">✓</span>
-                $200-1000/month premium
-              </li>
-              <li className="flex items-center gap-2 text-gray-300">
-                <span className="text-green-400">✓</span>
-                Tax-free retirement focus
-              </li>
-              <li className="flex items-center gap-2 text-gray-300">
-                <span className="text-green-400">✓</span>
-                Highest commissions
-              </li>
-              <li className="flex items-center gap-2 text-gray-300">
-                <span className="text-green-400">✓</span>
-                Premium quality scoring
-              </li>
-            </ul>
-            
-            <button className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg">
-              Order Now
-            </button>
+
+            {/* Mortgage Protection Pro */}
+            <div className="glass rounded-2xl p-6 hover:border-green-500/30 transition-all duration-300 hover:scale-105">
+              <div className="text-center mb-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <TrendingUp className="h-8 w-8 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-white mb-2">Mortgage Protection Pro</h3>
+                <div className="text-2xl font-bold text-green-400 mb-1">$25-32</div>
+                <div className="text-slate-400 text-sm">per lead</div>
+              </div>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Age Range:</span>
+                  <span className="text-white">30-50</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Income:</span>
+                  <span className="text-white">$60K+</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Close Rate:</span>
+                  <span className="text-green-400">19-23%</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Avg Premium:</span>
+                  <span className="text-white">$3,400</span>
+                </div>
+              </div>
+              <div className="mt-4 p-3 bg-green-900/20 border border-green-400/30 rounded-lg">
+                <div className="text-green-400 text-xs font-semibold">FASTEST CLOSE</div>
+                <div className="text-slate-300 text-xs">Homeowners protecting mortgage debt</div>
+              </div>
+            </div>
+
+            {/* Trucker Insurance Elite */}
+            <div className="glass rounded-2xl p-6 hover:border-purple-500/30 transition-all duration-300 hover:scale-105">
+              <div className="text-center mb-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-purple-400 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <Star className="h-8 w-8 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-white mb-2">Trucker Insurance Elite</h3>
+                <div className="text-2xl font-bold text-purple-400 mb-1">$28-35</div>
+                <div className="text-slate-400 text-sm">per lead</div>
+              </div>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Age Range:</span>
+                  <span className="text-white">35-60</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Income:</span>
+                  <span className="text-white">$80K+</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Close Rate:</span>
+                  <span className="text-green-400">20-24%</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Avg Premium:</span>
+                  <span className="text-white">$3,800</span>
+                </div>
+              </div>
+              <div className="mt-4 p-3 bg-purple-900/20 border border-purple-400/30 rounded-lg">
+                <div className="text-purple-400 text-xs font-semibold">NICHE EXPERTISE</div>
+                <div className="text-slate-300 text-xs">Owner-operators & fleet drivers</div>
+              </div>
+            </div>
           </div>
 
-          {/* Annuity */}
-          <div className="rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 p-6">
-            <div className="text-center mb-6">
-              <h3 className="text-xl font-bold text-white mb-2">Annuity</h3>
-              <div className="text-3xl font-bold text-purple-400 mb-1">$35</div>
-              <div className="text-gray-400 text-sm">per lead</div>
-            </div>
-            
-            <ul className="space-y-3 mb-6 text-sm">
-              <li className="flex items-center gap-2 text-gray-300">
-                <span className="text-green-400">✓</span>
-                Ages 55+
-              </li>
-              <li className="flex items-center gap-2 text-gray-300">
-                <span className="text-green-400">✓</span>
-                Retirement planning focused
-              </li>
-              <li className="flex items-center gap-2 text-gray-300">
-                <span className="text-green-400">✓</span>
-                High asset individuals
-              </li>
-              <li className="flex items-center gap-2 text-gray-300">
-                <span className="text-green-400">✓</span>
-                Large premium potential
-              </li>
-              <li className="flex items-center gap-2 text-gray-300">
-                <span className="text-green-400">✓</span>
-                Elite agent priority
-              </li>
-            </ul>
-            
-            <button className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg">
-              Order Now
-            </button>
-          </div>
-        </div>
-
-        {/* Competitor Comparison */}
-        <div className="bg-black/20 rounded-xl p-8 mb-16">
-          <h2 className="text-2xl font-bold text-white text-center mb-8">
-            Why Our $25-30 Pricing Destroys the Competition
-          </h2>
-          
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-gray-600">
-                  <th className="text-left p-4 text-gray-300">Provider</th>
-                  <th className="text-center p-4 text-gray-300">Price Range</th>
-                  <th className="text-center p-4 text-gray-300">Exclusivity</th>
-                  <th className="text-center p-4 text-gray-300">Conversion Rate</th>
-                  <th className="text-center p-4 text-gray-300">Cost per Sale</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b border-gray-700">
-                  <td className="p-4 font-semibold text-purple-400">EliteLeads Pro</td>
-                  <td className="p-4 text-center text-white">$25-35</td>
-                  <td className="p-4 text-center text-green-400">✓ Exclusive</td>
-                  <td className="p-4 text-center text-green-400">15%</td>
-                  <td className="p-4 text-center text-green-400 font-semibold">$192</td>
-                </tr>
-                <tr className="border-b border-gray-700">
-                  <td className="p-4 text-gray-300">G.O.A.T Leads</td>
-                  <td className="p-4 text-center text-gray-300">$4-7</td>
-                  <td className="p-4 text-center text-red-400">✗ Shared</td>
-                  <td className="p-4 text-center text-red-400">2%</td>
-                  <td className="p-4 text-center text-red-400">$250</td>
-                </tr>
-                <tr className="border-b border-gray-700">
-                  <td className="p-4 text-gray-300">ClosrLeads</td>
-                  <td className="p-4 text-center text-gray-300">$1-125</td>
-                  <td className="p-4 text-center text-red-400">✗ Shared</td>
-                  <td className="p-4 text-center text-yellow-400">3-8%</td>
-                  <td className="p-4 text-center text-yellow-400">$200-400</td>
-                </tr>
-                <tr>
-                  <td className="p-4 text-gray-300">Others</td>
-                  <td className="p-4 text-center text-gray-300">$2-50</td>
-                  <td className="p-4 text-center text-red-400">✗ Shared</td>
-                  <td className="p-4 text-center text-red-400">1-5%</td>
-                  <td className="p-4 text-center text-red-400">$300+</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          
-          <div className="mt-6 text-center">
-            <div className="text-lg text-green-400 font-semibold">
-              Lower cost per sale + Higher conversion rates = Maximum ROI
+          <div className="mt-12 text-center">
+            <div className="inline-flex items-center gap-4 px-6 py-3 bg-slate-800/50 border border-slate-700 rounded-xl">
+              <div className="flex items-center gap-2">
+                <CheckCircle className="h-5 w-5 text-green-400" />
+                <span className="text-slate-300 text-sm">All leads 100% exclusive</span>
+              </div>
+              <div className="w-px h-4 bg-slate-600"></div>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="h-5 w-5 text-blue-400" />
+                <span className="text-slate-300 text-sm">TCPA compliant</span>
+              </div>
+              <div className="w-px h-4 bg-slate-600"></div>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="h-5 w-5 text-gold-400" />
+                <span className="text-slate-300 text-sm">90+ quality scores</span>
+              </div>
             </div>
           </div>
         </div>
+      </section>
 
-        {/* Volume Pricing */}
-        <div className="grid gap-8 md:grid-cols-3 mb-16">
-          <div className="bg-white/5 rounded-lg p-6 text-center">
-            <h3 className="text-lg font-bold text-white mb-4">Starter</h3>
-            <div className="text-gray-300 mb-4">
-              <div>1-10 leads/month</div>
-              <div className="text-sm text-gray-400">Perfect for new agents</div>
-            </div>
-            <div className="text-purple-400 font-semibold">Full price per lead</div>
-          </div>
-          
-          <div className="bg-gradient-to-b from-purple-600/20 to-purple-800/20 border border-purple-400 rounded-lg p-6 text-center relative">
-            <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
-              <div className="bg-purple-400 text-black px-2 py-1 rounded text-xs font-bold">BEST VALUE</div>
-            </div>
-            <h3 className="text-lg font-bold text-white mb-4">Professional</h3>
-            <div className="text-gray-300 mb-4">
-              <div>11-50 leads/month</div>
-              <div className="text-sm text-gray-400">Most popular tier</div>
-            </div>
-            <div className="text-green-400 font-semibold">5% discount</div>
-          </div>
-          
-          <div className="bg-white/5 rounded-lg p-6 text-center">
-            <h3 className="text-lg font-bold text-white mb-4">Elite</h3>
-            <div className="text-gray-300 mb-4">
-              <div>51+ leads/month</div>
-              <div className="text-sm text-gray-400">High-volume agents</div>
-            </div>
-            <div className="text-green-400 font-semibold">10% discount + perks</div>
+      {/* Lead Packages */}
+      <section className="py-20">
+        <div className="container mx-auto px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
+            {leadPackages.map((pkg, index) => (
+              <div
+                key={pkg.name}
+                className={`relative rounded-2xl p-8 transition-all duration-300 hover:scale-105 ${
+                  pkg.popular
+                    ? 'border-2 border-gold-400 bg-gradient-to-b from-gold-500/10 to-slate-900/50 shadow-xl shadow-gold-500/20'
+                    : 'glass hover:border-gold-500/30'
+                }`}
+              >
+                {pkg.badge && (
+                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                    <span className={`px-4 py-2 rounded-full text-sm font-bold ${
+                      pkg.popular 
+                        ? 'bg-gold-400 text-navy-950' 
+                        : 'bg-green-500 text-white'
+                    }`}>
+                      {pkg.badge}
+                    </span>
+                  </div>
+                )}
+
+                {/* Package Header */}
+                <div className="text-center mb-6">
+                  <h3 className="text-xl font-bold text-white mb-2">{pkg.name}</h3>
+                  <p className="text-slate-400 text-sm mb-4">{pkg.description}</p>
+                  
+                  {/* Lead Count Badge */}
+                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-slate-800/50 rounded-lg mb-4">
+                    <Users className="w-4 h-4 text-blue-400" />
+                    <span className="text-white font-semibold">{pkg.leadCount} Leads</span>
+                  </div>
+
+                  {/* Pricing */}
+                  <div className="mb-4">
+                    {pkg.originalPricePerLead && (
+                      <div className="flex items-center justify-center gap-2 mb-2">
+                        <span className="text-slate-500 line-through text-lg">
+                          ${pkg.originalPricePerLead}/lead
+                        </span>
+                        {pkg.savings && (
+                          <span className="text-green-400 text-sm font-semibold">
+                            {pkg.savings}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                    
+                    <div className="text-3xl font-bold text-white mb-1">
+                      ${pkg.pricePerLead}<span className="text-lg text-slate-400">/lead</span>
+                    </div>
+                    
+                    <div className="text-gold-400 font-semibold">
+                      ${pkg.totalPrice.toLocaleString()} total
+                    </div>
+                    
+                    {pkg.originalTotalPrice && (
+                      <div className="text-slate-500 line-through text-sm">
+                        was ${pkg.originalTotalPrice.toLocaleString()}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Features */}
+                <div className="space-y-3 mb-8">
+                  {pkg.features.map((feature, featureIndex) => (
+                    <div key={featureIndex} className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-400 mt-0.5 flex-shrink-0" />
+                      <span className="text-slate-300 text-sm">{feature}</span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* CTA Button */}
+                <Link
+                  href="/apply"
+                  className={`w-full py-4 rounded-xl font-bold transition-all duration-300 text-center block ${
+                    pkg.popular
+                      ? 'bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-400 hover:to-gold-500 text-navy-950 shadow-lg shadow-gold-500/25'
+                      : 'bg-slate-800 hover:bg-slate-700 text-white border border-slate-600'
+                  }`}
+                >
+                  {pkg.cta}
+                </Link>
+
+
+              </div>
+            ))}
           </div>
         </div>
+      </section>
 
-        {/* Guarantees */}
-        <div className="bg-gradient-to-r from-green-900/20 to-purple-900/20 rounded-xl p-8 text-center">
-          <h2 className="text-2xl font-bold text-white mb-6">Our Iron-Clad Guarantees</h2>
-          
-          <div className="grid gap-6 md:grid-cols-3">
-            <div>
-              <div className="text-green-400 text-3xl font-bold mb-2">300%</div>
-              <div className="text-white font-semibold mb-2">ROI Guarantee</div>
-              <div className="text-gray-300 text-sm">If you don't achieve 300% ROI, we refund the difference</div>
+      {/* Comparison Table */}
+      <section className="py-20 bg-gradient-to-r from-slate-900 to-slate-950">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-white mb-4">Package Comparison</h2>
+            <p className="text-xl text-slate-400">Compare features across all lead packages</p>
+          </div>
+
+          <div className="glass rounded-2xl overflow-hidden max-w-5xl mx-auto">
+            <div className="grid grid-cols-5 gap-4 px-6 py-4 bg-slate-800/30 border-b border-slate-700">
+              <div className="font-semibold text-white">Features</div>
+              <div className="text-center text-slate-300">Trial Pack</div>
+              <div className="text-center text-gold-400 font-semibold">Growth Pack</div>
+              <div className="text-center text-blue-400 font-semibold">Scale Pack</div>
+              <div className="text-center text-purple-400 font-semibold">Elite Pack</div>
             </div>
             
-            <div>
-              <div className="text-purple-400 text-3xl font-bold mb-2">&lt;5min</div>
-              <div className="text-white font-semibold mb-2">Freshness Guarantee</div>
-              <div className="text-gray-300 text-sm">Every lead delivered within 5 minutes of capture</div>
-            </div>
-            
-            <div>
-              <div className="text-blue-400 text-3xl font-bold mb-2">100%</div>
-              <div className="text-white font-semibold mb-2">Exclusivity Guarantee</div>
-              <div className="text-gray-300 text-sm">Your lead is never sold to anyone else, ever</div>
-            </div>
+            {comparisonData.map((row, index) => (
+              <div key={index} className="grid grid-cols-5 gap-4 px-6 py-4 border-b border-slate-800 hover:bg-slate-800/20 transition-colors">
+                <div className="font-medium text-slate-300">{row.metric}</div>
+                <div className="text-center text-slate-400">{row.trial}</div>
+                <div className="text-center text-gold-400 font-medium">{row.growth}</div>
+                <div className="text-center text-blue-400 font-medium">{row.scale}</div>
+                <div className="text-center text-purple-400 font-medium">{row.elite}</div>
+              </div>
+            ))}
           </div>
         </div>
+      </section>
 
-        {/* CTA */}
-        <div className="text-center mt-16">
-          <h2 className="text-2xl font-bold text-white mb-4">
-            Ready to Get Started?
-          </h2>
-          <p className="text-gray-300 mb-8">
-            Join elite agents who are already crushing their goals with our exclusive leads.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/leads" className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-lg font-semibold">
-              Browse Available Leads
-            </Link>
-            <button className="border border-gray-600 hover:bg-white/10 text-white px-8 py-3 rounded-lg">
-              Contact Sales
-            </button>
+      {/* ROI Calculator */}
+      <section className="py-20">
+        <div className="container mx-auto px-6 text-center">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-4xl font-bold text-white mb-6">
+              See Your <span className="text-gold-400">Potential ROI</span>
+            </h2>
+            
+            <div className="glass rounded-2xl p-8 mb-8">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="text-center">
+                  <div className="text-4xl font-bold text-green-400 mb-2">18.3%</div>
+                  <div className="text-slate-300 font-semibold">Average Close Rate</div>
+                  <div className="text-slate-500 text-sm">vs 2-3% industry standard</div>
+                </div>
+                
+                <div className="text-center">
+                  <div className="text-4xl font-bold text-gold-400 mb-2">$3,200</div>
+                  <div className="text-slate-300 font-semibold">Average Commission</div>
+                  <div className="text-slate-500 text-sm">per closed lead</div>
+                </div>
+                
+                <div className="text-center">
+                  <div className="text-4xl font-bold text-blue-400 mb-2">12x</div>
+                  <div className="text-slate-300 font-semibold">Return on Investment</div>
+                  <div className="text-slate-500 text-sm">$32 lead cost vs $3,200 commission</div>
+                </div>
+              </div>
+              
+              <div className="mt-8 space-y-4">
+                <div className="p-4 bg-gold-500/10 border border-gold-500/20 rounded-xl">
+                  <h4 className="text-md font-bold text-gold-400 mb-2">IUL Elite Premium Example:</h4>
+                  <p className="text-slate-300 text-sm">
+                    10 leads × 23% close rate = <span className="text-green-400 font-bold">2.3 sales</span><br />
+                    2.3 sales × $4,200 avg commission = <span className="text-green-400 font-bold">$9,660 revenue</span><br />
+                    Cost: 10 leads × $32 = $320 • <span className="text-green-400 font-bold">Profit: $9,340</span>
+                  </p>
+                </div>
+                
+                <div className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-xl">
+                  <h4 className="text-md font-bold text-blue-400 mb-2">Final Expense Elite Example:</h4>
+                  <p className="text-slate-300 text-sm">
+                    15 leads × 20% close rate = <span className="text-green-400 font-bold">3 sales</span><br />
+                    3 sales × $2,800 avg commission = <span className="text-green-400 font-bold">$8,400 revenue</span><br />
+                    Cost: 15 leads × $25 = $375 • <span className="text-green-400 font-bold">Profit: $8,025</span>
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 bg-gradient-to-r from-gold-500/10 via-gold-600/10 to-gold-500/10">
+        <div className="container mx-auto px-6 text-center">
+          <div className="max-w-3xl mx-auto">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              Ready to Start with <span className="text-gold-400">Premium Leads</span>?
+            </h2>
+            
+            <p className="text-xl text-slate-300 mb-12">
+              Join 5,847+ elite agents earning 6-7 figures across IUL, Final Expense, Mortgage Protection & Trucker Insurance. 
+              Start with our trial pack or scale with volume discounts.
+            </p>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+              <Link
+                href="/apply"
+                className="bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-400 hover:to-gold-500 text-navy-950 font-bold px-8 py-4 rounded-xl transition-all duration-300 shadow-lg shadow-gold-500/25 text-lg flex items-center gap-3"
+              >
+                <Crown className="w-5 h-5" />
+                Apply for Elite Access
+              </Link>
+              
+              <Link
+                href="/apply"
+                className="border border-slate-600 hover:border-gold-400 text-white hover:text-gold-400 px-8 py-4 rounded-xl font-semibold transition-all duration-300 text-lg"
+              >
+                Submit Application
+              </Link>
+            </div>
+
+            {/* Trust Indicators */}
+            <div className="flex flex-wrap justify-center items-center gap-8 mt-12 text-slate-400">
+              <div className="flex items-center gap-2">
+                <Shield className="w-5 h-5 text-green-400" />
+                <span>100% Exclusive</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Star className="w-5 h-5 text-gold-400 fill-current" />
+                <span>90+ Quality Score</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Clock className="w-5 h-5 text-blue-400" />
+                <span>15-Min Delivery</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Award className="w-5 h-5 text-purple-400" />
+                <span>Quality Guarantee</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <Footer />
     </div>
   );
 }

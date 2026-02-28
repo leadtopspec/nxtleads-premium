@@ -1,0 +1,2393 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { useAuth } from '@/contexts/AuthContext'
+import { useRouter } from 'next/navigation'
+import { 
+  Crown,
+  Target,
+  DollarSign,
+  Users,
+  TrendingUp,
+  LogOut,
+  ShoppingCart,
+  Download,
+  BarChart3,
+  Calendar,
+  Settings,
+  CreditCard,
+  Star,
+  Phone,
+  Mail,
+  MapPin,
+  CheckCircle,
+  Timer,
+  Shield,
+  Search
+} from 'lucide-react'
+
+interface Lead {
+  id: string
+  name: string
+  type: string
+  location: string
+  phone: string
+  email: string
+  quality: number
+  price: number
+  status: 'new' | 'contacted' | 'appointment' | 'sold'
+  purchasedAt: string
+}
+
+export default function DashboardPage() {
+  const { user, profile, loading, signOut } = useAuth()
+  const router = useRouter()
+  const [activeTab, setActiveTab] = useState('overview')
+  const [leads, setLeads] = useState<Lead[]>([])
+  const [marketplaceLeads, setMarketplaceLeads] = useState<Lead[]>([])
+  const [credits, setCredits] = useState(50)
+  const [selectedLeads, setSelectedLeads] = useState<string[]>([])
+  const [selectedLead, setSelectedLead] = useState<Lead | null>(null)
+  const [showLeadModal, setShowLeadModal] = useState(false)
+  const [activeMarketplace, setActiveMarketplace] = useState<'drops' | 'bulk'>('drops')
+  const [nextDropTime, setNextDropTime] = useState<Date>(new Date(Date.now() + 45 * 60 * 1000)) // 45 minutes from now
+  const [dropLeads, setDropLeads] = useState<Lead[]>([])
+  const [bulkLeads, setBulkLeads] = useState<Lead[]>([])
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push('/auth/signin')
+    }
+  }, [user, loading, router])
+
+  // Timer for next drop countdown
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = Date.now()
+      if (nextDropTime.getTime() <= now) {
+        // Reset timer for next drop (45 minutes from now)
+        setNextDropTime(new Date(now + 45 * 60 * 1000))
+      }
+    }, 1000)
+
+    return () => clearInterval(interval)
+  }, [nextDropTime])
+
+  useEffect(() => {
+    // Load sample leads
+    setLeads([
+      {
+        id: 'NXL-001',
+        name: 'Michael Rodriguez',
+        type: 'IUL Premium',
+        location: 'Dallas, TX',
+        phone: 'Available - Tap to Reveal',
+        email: 'Available - Tap to Reveal',
+        quality: 94,
+        price: 32.50,
+        status: 'new',
+        purchasedAt: '2 hours ago'
+      },
+      {
+        id: 'NXL-002',
+        name: 'Sarah Chen',
+        type: 'Final Expense',
+        location: 'Austin, TX',
+        phone: 'Available - Tap to Reveal',
+        email: 'Available - Tap to Reveal',
+        quality: 91,
+        price: 28.00,
+        status: 'contacted',
+        purchasedAt: '1 day ago'
+      }
+    ])
+
+    // Load DROP leads (Supreme-style limited drops)
+    setDropLeads([
+      {
+        id: 'DROP-001',
+        name: '🔥 Premium Drop Lead #1',
+        type: 'IUL Premium',
+        location: 'Texas',
+        phone: 'Hidden until purchase',
+        email: 'Hidden until purchase',
+        quality: 98,
+        price: 45.00,
+        status: 'new',
+        purchasedAt: ''
+      },
+      {
+        id: 'DROP-002',
+        name: '🔥 Premium Drop Lead #2',
+        type: 'Final Expense Elite',
+        location: 'Florida',
+        phone: 'Hidden until purchase',
+        email: 'Hidden until purchase',
+        quality: 96,
+        price: 42.00,
+        status: 'new',
+        purchasedAt: ''
+      },
+      {
+        id: 'DROP-003',
+        name: '🔥 Premium Drop Lead #3',
+        type: 'Mortgage Protection Pro',
+        location: 'California',
+        phone: 'Hidden until purchase',
+        email: 'Hidden until purchase',
+        quality: 94,
+        price: 38.00,
+        status: 'new',
+        purchasedAt: ''
+      }
+    ])
+
+    // Load BULK leads (Always available inventory)
+    setBulkLeads([
+      {
+        id: 'BULK-001',
+        name: 'Standard Lead #001',
+        type: 'IUL Premium',
+        location: 'Texas',
+        phone: 'Hidden until purchase',
+        email: 'Hidden until purchase',
+        quality: 88,
+        price: 29.50,
+        status: 'new',
+        purchasedAt: ''
+      },
+      {
+        id: 'BULK-002',
+        name: 'Standard Lead #002',
+        type: 'Final Expense',
+        location: 'Georgia',
+        phone: 'Hidden until purchase',
+        email: 'Hidden until purchase',
+        quality: 85,
+        price: 26.00,
+        status: 'new',
+        purchasedAt: ''
+      },
+      {
+        id: 'BULK-003',
+        name: 'Standard Lead #003',
+        type: 'Mortgage Protection',
+        location: 'North Carolina',
+        phone: 'Hidden until purchase',
+        email: 'Hidden until purchase',
+        quality: 82,
+        price: 24.50,
+        status: 'new',
+        purchasedAt: ''
+      },
+      {
+        id: 'BULK-004',
+        name: 'Standard Lead #004',
+        type: 'Trucker Insurance',
+        location: 'Tennessee',
+        phone: 'Hidden until purchase',
+        email: 'Hidden until purchase',
+        quality: 79,
+        price: 22.00,
+        status: 'new',
+        purchasedAt: ''
+      },
+      {
+        id: 'BULK-005',
+        name: 'Standard Lead #005',
+        type: 'IUL Premium',
+        location: 'Arizona',
+        phone: 'Hidden until purchase',
+        email: 'Hidden until purchase',
+        quality: 91,
+        price: 32.00,
+        status: 'new',
+        purchasedAt: ''
+      },
+      {
+        id: 'BULK-006',
+        name: 'Standard Lead #006',
+        type: 'Final Expense',
+        location: 'Nevada',
+        phone: 'Hidden until purchase',
+        email: 'Hidden until purchase',
+        quality: 87,
+        price: 28.50,
+        status: 'new',
+        purchasedAt: ''
+      }
+    ])
+
+    // Legacy marketplace leads (will be deprecated)
+    setMarketplaceLeads([])
+  }, [])
+
+  const stats = {
+    totalLeads: leads.length,
+    newLeads: leads.filter(l => l.status === 'new').length,
+    revenue: 1250,
+    conversionRate: 18.5
+  }
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'new': return 'bg-red-100 text-red-800'
+      case 'contacted': return 'bg-yellow-100 text-yellow-800'
+      case 'appointment': return 'bg-blue-100 text-blue-800'
+      case 'sold': return 'bg-green-100 text-green-800'
+      default: return 'bg-gray-100 text-gray-800'
+    }
+  }
+
+  const purchaseLead = (leadId: string) => {
+    // Check if it's a drop lead or bulk lead
+    const dropLead = dropLeads.find(l => l.id === leadId)
+    const bulkLead = bulkLeads.find(l => l.id === leadId)
+    const lead = dropLead || bulkLead || marketplaceLeads.find(l => l.id === leadId)
+    
+    if (!lead) {
+      alert('Lead not found!')
+      return
+    }
+
+    // Check credit requirements (drop leads cost 4 credits, bulk leads cost 3)
+    const creditCost = dropLead ? 4 : 3
+    if (credits < creditCost) {
+      alert('Insufficient credits!')
+      return
+    }
+
+    // Generate realistic contact information based on lead type
+    const generateContactInfo = (leadId: string, type: string) => {
+      const firstNames = ['Michael', 'Sarah', 'David', 'Jennifer', 'Robert', 'Lisa', 'John', 'Amanda', 'Christopher', 'Jessica']
+      const lastNames = ['Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez', 'Hernandez']
+      
+      const firstName = firstNames[Math.floor(Math.random() * firstNames.length)]
+      const lastName = lastNames[Math.floor(Math.random() * lastNames.length)]
+      const phone = `(${Math.floor(Math.random() * 900) + 100}) ${Math.floor(Math.random() * 900) + 100}-${Math.floor(Math.random() * 9000) + 1000}`
+      const email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}@${['gmail.com', 'yahoo.com', 'outlook.com'][Math.floor(Math.random() * 3)]}`
+
+      return { name: `${firstName} ${lastName}`, phone, email }
+    }
+
+    const contactInfo = generateContactInfo(leadId, lead.type)
+
+    // Move to purchased leads with real data revealed
+    const purchasedLead = {
+      ...lead,
+      name: contactInfo.name,
+      phone: contactInfo.phone,
+      email: contactInfo.email,
+      status: 'new' as const,
+      purchasedAt: 'Just now'
+    }
+    
+    setLeads([purchasedLead, ...leads])
+    
+    // Remove from the appropriate source
+    if (dropLead) {
+      setDropLeads(dropLeads.filter(l => l.id !== leadId))
+    } else if (bulkLead) {
+      setBulkLeads(bulkLeads.filter(l => l.id !== leadId))
+    } else {
+      setMarketplaceLeads(marketplaceLeads.filter(l => l.id !== leadId))
+    }
+    
+    setCredits(credits - creditCost)
+    
+    const leadType = dropLead ? 'premium drop' : 'bulk'
+    alert(`${leadType.charAt(0).toUpperCase() + leadType.slice(1)} lead ${leadId} purchased successfully! Contact details: ${contactInfo.name} - ${contactInfo.phone}`)
+  }
+
+  const toggleLeadSelection = (leadId: string) => {
+    setSelectedLeads(prev => 
+      prev.includes(leadId) 
+        ? prev.filter(id => id !== leadId)
+        : [...prev, leadId]
+    )
+  }
+
+  const toggleAllLeads = () => {
+    setSelectedLeads(prev => 
+      prev.length === leads.length ? [] : leads.map(lead => lead.id)
+    )
+  }
+
+  const openLeadModal = (lead: Lead) => {
+    setSelectedLead(lead)
+    setShowLeadModal(true)
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-4 border-yellow-400/20 border-t-yellow-400 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-slate-400">Loading dashboard...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!user) {
+    return null
+  }
+
+  return (
+    <div className="min-h-screen bg-slate-950">
+      {/* Header */}
+      <header className="bg-slate-900 border-b border-slate-800 px-6 py-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-lg flex items-center justify-center">
+                <span className="text-slate-950 font-bold text-sm">N</span>
+              </div>
+              <div>
+                <div className="text-lg font-bold text-white">NxtLeads</div>
+                <div className="text-xs text-slate-400">Elite Dashboard</div>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-2 bg-yellow-400/10 border border-yellow-400/20 rounded-full px-3 py-1">
+              <Crown className="w-4 h-4 text-yellow-400" />
+              <span className="text-yellow-400 font-semibold text-sm">Elite Member</span>
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3 bg-slate-800 rounded-lg px-4 py-2">
+              <CreditCard className="w-4 h-4 text-yellow-400" />
+              <div>
+                <div className="text-xs text-slate-400">Credits</div>
+                <div className="text-yellow-400 font-bold">{credits}</div>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                {user.email?.[0]?.toUpperCase()}
+              </div>
+              <button onClick={() => signOut()} className="text-slate-400 hover:text-white">
+                <LogOut className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div className="flex min-h-screen">
+        {/* Sidebar */}
+        <aside className="w-64 bg-slate-900/50 border-r border-slate-800 flex-shrink-0 p-6">
+          <nav className="space-y-2">
+            {[
+              { id: 'overview', label: 'Overview', icon: BarChart3 },
+              { id: 'my-leads', label: 'My Leads', icon: Target },
+              { id: 'marketplace', label: 'Buy Leads', icon: ShoppingCart },
+              { id: 'analytics', label: 'Analytics', icon: TrendingUp },
+              { id: 'calendar', label: 'Calendar', icon: Calendar },
+              { id: 'settings', label: 'Settings', icon: Settings }
+            ].map((item) => (
+              <button
+                key={item.id}
+                onClick={() => setActiveTab(item.id)}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors ${
+                  activeTab === item.id 
+                    ? 'bg-yellow-400/10 border border-yellow-400/20 text-yellow-400' 
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                }`}
+              >
+                <item.icon className="w-5 h-5" />
+                <span>{item.label}</span>
+              </button>
+            ))}
+          </nav>
+        </aside>
+
+        {/* Main Content */}
+        <main className="flex-1 p-8 min-w-0 overflow-hidden">
+          {activeTab === 'overview' && (
+            <div className="space-y-8">
+              {/* Professional Header with Quick Actions */}
+              <div className="flex items-center justify-between">
+                <div>
+                  <h1 className="text-3xl font-bold text-white mb-2">Welcome back, Elite Agent</h1>
+                  <p className="text-slate-400">Here's your performance overview and quick actions</p>
+                </div>
+                
+                <div className="flex items-center gap-4">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
+                    <input
+                      type="text"
+                      placeholder="Search leads..."
+                      className="pl-10 pr-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 w-64"
+                    />
+                  </div>
+                  
+                  <button
+                    onClick={() => setActiveTab('my-leads')}
+                    className="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2"
+                  >
+                    <Target className="w-4 h-4" />
+                    View My Leads
+                  </button>
+                  
+                  <button
+                    onClick={() => setActiveTab('marketplace')}
+                    className="bg-yellow-400 hover:bg-yellow-300 text-slate-950 px-4 py-2 rounded-lg font-bold transition-colors flex items-center gap-2"
+                  >
+                    <ShoppingCart className="w-4 h-4" />
+                    Order Leads
+                  </button>
+                </div>
+              </div>
+
+              {/* Quick Actions Bar */}
+              <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+                <h3 className="text-lg font-semibold text-white mb-4">Quick Actions</h3>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <button
+                    onClick={() => setActiveTab('marketplace')}
+                    className="bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-300 hover:to-yellow-400 text-slate-950 p-4 rounded-lg font-semibold transition-all transform hover:scale-105 flex items-center justify-center gap-2"
+                  >
+                    <ShoppingCart className="w-5 h-5" />
+                    Buy New Leads
+                  </button>
+                  
+                  <button
+                    onClick={() => setActiveTab('my-leads')}
+                    className="bg-slate-700 hover:bg-slate-600 text-white p-4 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2"
+                  >
+                    <Target className="w-5 h-5" />
+                    My Leads ({stats.totalLeads})
+                  </button>
+                  
+                  <button
+                    onClick={() => setActiveTab('analytics')}
+                    className="bg-slate-700 hover:bg-slate-600 text-white p-4 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2"
+                  >
+                    <BarChart3 className="w-5 h-5" />
+                    View Analytics
+                  </button>
+                  
+                  <button className="bg-slate-700 hover:bg-slate-600 text-white p-4 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2">
+                    <Download className="w-5 h-5" />
+                    Export Data
+                  </button>
+                </div>
+              </div>
+
+              {/* Enhanced Stats Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div className="bg-gradient-to-br from-slate-800/50 to-slate-800/30 border border-slate-700 hover:border-blue-500/50 rounded-xl p-6 transition-all hover:transform hover:scale-105">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center">
+                      <Target className="w-6 h-6 text-blue-400" />
+                    </div>
+                    <div className="text-right">
+                      <div className="text-2xl font-bold text-white">{stats.totalLeads}</div>
+                      <div className="text-green-400 text-sm font-medium">+2 today</div>
+                    </div>
+                  </div>
+                  <div className="text-slate-400 text-sm font-medium">Total Leads</div>
+                  <div className="w-full bg-slate-700 rounded-full h-2 mt-3">
+                    <div className="bg-blue-400 h-2 rounded-full" style={{width: '65%'}}></div>
+                  </div>
+                </div>
+                
+                <div className="bg-gradient-to-br from-slate-800/50 to-slate-800/30 border border-slate-700 hover:border-red-500/50 rounded-xl p-6 transition-all hover:transform hover:scale-105">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="w-12 h-12 bg-red-500/20 rounded-xl flex items-center justify-center">
+                      <Crown className="w-6 h-6 text-red-400" />
+                    </div>
+                    <div className="text-right">
+                      <div className="text-2xl font-bold text-white">{stats.newLeads}</div>
+                      <div className="text-red-400 text-sm font-medium">Needs attention</div>
+                    </div>
+                  </div>
+                  <div className="text-slate-400 text-sm font-medium">New Leads</div>
+                  <div className="w-full bg-slate-700 rounded-full h-2 mt-3">
+                    <div className="bg-red-400 h-2 rounded-full" style={{width: '100%'}}></div>
+                  </div>
+                </div>
+                
+                <div className="bg-gradient-to-br from-slate-800/50 to-slate-800/30 border border-slate-700 hover:border-green-500/50 rounded-xl p-6 transition-all hover:transform hover:scale-105">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center">
+                      <DollarSign className="w-6 h-6 text-green-400" />
+                    </div>
+                    <div className="text-right">
+                      <div className="text-2xl font-bold text-white">${stats.revenue}</div>
+                      <div className="text-green-400 text-sm font-medium">+18% this month</div>
+                    </div>
+                  </div>
+                  <div className="text-slate-400 text-sm font-medium">Revenue</div>
+                  <div className="w-full bg-slate-700 rounded-full h-2 mt-3">
+                    <div className="bg-green-400 h-2 rounded-full" style={{width: '78%'}}></div>
+                  </div>
+                </div>
+                
+                <div className="bg-gradient-to-br from-slate-800/50 to-slate-800/30 border border-slate-700 hover:border-purple-500/50 rounded-xl p-6 transition-all hover:transform hover:scale-105">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center">
+                      <TrendingUp className="w-6 h-6 text-purple-400" />
+                    </div>
+                    <div className="text-right">
+                      <div className="text-2xl font-bold text-white">{stats.conversionRate}%</div>
+                      <div className="text-purple-400 text-sm font-medium">Above industry avg</div>
+                    </div>
+                  </div>
+                  <div className="text-slate-400 text-sm font-medium">Conversion Rate</div>
+                  <div className="w-full bg-slate-700 rounded-full h-2 mt-3">
+                    <div className="bg-purple-400 h-2 rounded-full" style={{width: '92%'}}></div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Performance Summary */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-xl font-bold text-white">This Month's Performance</h2>
+                    <div className="text-right">
+                      <div className="text-green-400 font-semibold text-sm">+12.5% vs last month</div>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-400">Leads Purchased</span>
+                      <span className="text-white font-semibold">15</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-400">Contacted</span>
+                      <span className="text-white font-semibold">12</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-400">Appointments Set</span>
+                      <span className="text-white font-semibold">8</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-400">Sales Closed</span>
+                      <span className="text-green-400 font-semibold">3</span>
+                    </div>
+                    <div className="pt-3 border-t border-slate-700">
+                      <div className="flex items-center justify-between">
+                        <span className="text-slate-400">Total Revenue</span>
+                        <span className="text-green-400 font-bold text-lg">${stats.revenue}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-xl font-bold text-white">Recent Activity</h2>
+                    <button className="text-yellow-400 hover:text-yellow-300 text-sm font-medium">
+                      View All
+                    </button>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <div className="flex items-start gap-4 p-3 bg-slate-700/30 rounded-lg">
+                      <div className="w-8 h-8 bg-green-500/20 rounded-full flex items-center justify-center mt-1">
+                        <ShoppingCart className="w-4 h-4 text-green-400" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="text-slate-300 font-medium">New lead purchased</div>
+                        <div className="text-slate-400 text-sm">Michael Rodriguez - IUL Premium</div>
+                        <div className="text-slate-500 text-xs">2 hours ago</div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start gap-4 p-3 bg-slate-700/30 rounded-lg">
+                      <div className="w-8 h-8 bg-blue-500/20 rounded-full flex items-center justify-center mt-1">
+                        <Phone className="w-4 h-4 text-blue-400" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="text-slate-300 font-medium">Lead contacted</div>
+                        <div className="text-slate-400 text-sm">Sarah Chen - Final Expense</div>
+                        <div className="text-slate-500 text-xs">1 day ago</div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start gap-4 p-3 bg-slate-700/30 rounded-lg">
+                      <div className="w-8 h-8 bg-purple-500/20 rounded-full flex items-center justify-center mt-1">
+                        <Calendar className="w-4 h-4 text-purple-400" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="text-slate-300 font-medium">Appointment scheduled</div>
+                        <div className="text-slate-400 text-sm">Jennifer Williams - Tomorrow 2:00 PM</div>
+                        <div className="text-slate-500 text-xs">2 days ago</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'my-leads' && (
+            <div className="space-y-6">
+              {/* Enhanced Header with Live Status */}
+              <div className="flex items-center justify-between">
+                <div>
+                  <h1 className="text-3xl font-bold text-white mb-2 flex items-center">
+                    <Target className="mr-3 text-yellow-400" size={32} />
+                    My Premium Leads
+                  </h1>
+                  <p className="text-slate-400 text-lg">Advanced lead management and tracking system</p>
+                </div>
+                
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center gap-2 bg-green-500/10 border border-green-500/20 rounded-lg px-3 py-2">
+                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                    <span className="text-green-400 font-semibold text-sm">ACTIVE</span>
+                  </div>
+                  <button className="bg-yellow-400 text-slate-950 px-4 py-2 rounded-lg font-semibold hover:bg-yellow-300 flex items-center gap-2">
+                    <Download className="w-4 h-4" />
+                    Export Leads
+                  </button>
+                </div>
+              </div>
+
+              {/* Advanced Filtering System */}
+              <div className="bg-slate-900/50 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center space-x-4">
+                    <h2 className="text-xl font-bold text-white flex items-center">
+                      <Search className="mr-3 text-slate-400" size={20} />
+                      Elite Lead Filters
+                    </h2>
+                    <button className="px-3 py-1.5 bg-slate-700/50 hover:bg-slate-600/50 text-slate-300 text-sm rounded-lg transition-all duration-200 flex items-center">
+                      Hide Filters
+                    </button>
+                  </div>
+                  
+                  {/* Quick Stats */}
+                  <div className="flex items-center space-x-6 text-sm">
+                    <div className="text-red-400 flex items-center">
+                      <div className="w-2 h-2 bg-red-400 rounded-full mr-2"></div>
+                      <span className="font-semibold">{stats.newLeads}</span>
+                      <span className="text-slate-400 ml-1">New Lead</span>
+                    </div>
+                    <div className="text-blue-400 flex items-center">
+                      <div className="w-2 h-2 bg-blue-400 rounded-full mr-2"></div>
+                      <span className="font-semibold">1</span>
+                      <span className="text-slate-400 ml-1">Called</span>
+                    </div>
+                    <div className="text-yellow-400 flex items-center">
+                      <div className="w-2 h-2 bg-yellow-400 rounded-full mr-2"></div>
+                      <span className="font-semibold">0</span>
+                      <span className="text-slate-400 ml-1">Follow Up</span>
+                    </div>
+                    <div className="text-green-400 flex items-center">
+                      <div className="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
+                      <span className="font-semibold">0</span>
+                      <span className="text-slate-400 ml-1">Sold</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Filter Controls Grid */}
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-6">
+                  {/* Lead Type */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-medium text-slate-400 uppercase tracking-wider">Lead Type</label>
+                    <select className="w-full bg-slate-800/50 border border-slate-600/50 text-white rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500/50 transition-all">
+                      <option value="All Types">All Types</option>
+                      <option value="IUL">IUL Premium</option>
+                      <option value="Final Expense">Final Expense Elite</option>
+                      <option value="Mortgage Protection">Mortgage Protection Pro</option>
+                      <option value="Trucker Insurance">Trucker Insurance</option>
+                    </select>
+                  </div>
+
+                  {/* Quality Bucket */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-medium text-slate-400 uppercase tracking-wider">Quality</label>
+                    <select className="w-full bg-slate-800/50 border border-slate-600/50 text-white rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500/50 transition-all">
+                      <option value="All">All Quality</option>
+                      <option value="95-100%">🔥 Elite (95-100%)</option>
+                      <option value="85-94%">⭐ Premium (85-94%)</option>
+                      <option value="75-84%">📈 Standard (75-84%)</option>
+                    </select>
+                  </div>
+
+                  {/* Language */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-medium text-slate-400 uppercase tracking-wider">Language</label>
+                    <select className="w-full bg-slate-800/50 border border-slate-600/50 text-white rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500/50 transition-all">
+                      <option value="All">All</option>
+                      <option value="English">🇺🇸 English</option>
+                      <option value="Spanish">🇪🇸 Spanish</option>
+                      <option value="Bilingual">🌐 Bilingual</option>
+                    </select>
+                  </div>
+
+                  {/* State */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-medium text-slate-400 uppercase tracking-wider">State</label>
+                    <select className="w-full bg-slate-800/50 border border-slate-600/50 text-white rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500/50 transition-all">
+                      <option value="All States">All States</option>
+                      <option value="Texas">Texas</option>
+                      <option value="Florida">Florida</option>
+                      <option value="California">California</option>
+                      <option value="New York">New York</option>
+                    </select>
+                  </div>
+
+                  {/* Lead Status */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-medium text-slate-400 uppercase tracking-wider">Lead Status</label>
+                    <select className="w-full bg-slate-800/50 border border-slate-600/50 text-white rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500/50 transition-all">
+                      <option value="All Statuses">All Statuses</option>
+                      <option value="New Lead">🔴 New Lead</option>
+                      <option value="Called">📞 Called</option>
+                      <option value="Follow Up">🔄 Follow Up</option>
+                      <option value="Appointment Set">📅 Appointment Set</option>
+                      <option value="Sold">💰 Sold</option>
+                      <option value="No Show">❌ No Show</option>
+                    </select>
+                  </div>
+
+                  {/* Search */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-medium text-slate-400 uppercase tracking-wider">Search</label>
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={16} />
+                      <input
+                        type="text"
+                        placeholder="Search leads..."
+                        className="w-full bg-slate-800/50 border border-slate-600/50 text-white rounded-lg pl-10 pr-3 py-2 text-sm focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500/50 transition-all"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-medium text-slate-400 uppercase tracking-wider">Actions</label>
+                    <div className="flex space-x-2">
+                      <button className="px-3 py-2 bg-yellow-600 hover:bg-yellow-700 text-white text-sm rounded-lg transition-all duration-200 font-medium flex-1">
+                        Apply
+                      </button>
+                      <button className="px-3 py-2 bg-slate-700/50 hover:bg-slate-600/50 text-slate-300 text-sm rounded-lg transition-all duration-200">
+                        Reset
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Saved Filters */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    <span className="text-slate-400 text-sm font-medium">Saved Filters:</span>
+                    <select className="bg-slate-800/50 border border-slate-600/50 text-white rounded-lg px-3 py-1.5 text-sm focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500/50 transition-all">
+                      <option value="">Select a saved filter...</option>
+                      <option value="Hot Leads">🔥 Hot Leads - Ready to Close</option>
+                      <option value="Recent Purchases">📈 Recent Purchases</option>
+                      <option value="Follow Up Required">📞 Follow Up Required</option>
+                      <option value="High Value IUL">💎 High Value IUL Prospects</option>
+                    </select>
+                    <button className="px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg transition-all duration-200 flex items-center">
+                      Save Current Filter
+                    </button>
+                  </div>
+
+                  <div className="flex items-center space-x-4 text-sm text-slate-400">
+                    <div className="flex items-center">
+                      <BarChart3 className="mr-1" size={16} />
+                      <span>View: Compact</span>
+                    </div>
+                    <div className="flex items-center">
+                      <Calendar className="mr-1" size={16} />
+                      <span>Date Filter</span>
+                    </div>
+                    <button className="text-yellow-400 hover:text-yellow-300 transition-colors">
+                      Refresh
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Bulk Actions Bar */}
+              {selectedLeads.length > 0 && (
+                <div className="bg-yellow-400/10 border border-yellow-400/20 rounded-lg p-4 mb-6">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-4">
+                      <span className="text-yellow-300 font-semibold">
+                        {selectedLeads.length} lead{selectedLeads.length > 1 ? 's' : ''} selected
+                      </span>
+                      <button 
+                        onClick={() => setSelectedLeads([])}
+                        className="text-slate-400 hover:text-white text-sm"
+                      >
+                        Clear selection
+                      </button>
+                    </div>
+                    
+                    <div className="flex items-center space-x-3">
+                      <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center">
+                        <Phone className="mr-2" size={16} />
+                        Bulk Call
+                      </button>
+                      <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center">
+                        <Mail className="mr-2" size={16} />
+                        Bulk Email
+                      </button>
+                      <button className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center">
+                        <Download className="mr-2" size={16} />
+                        Export Selected
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Professional Lead Table */}
+              <div className="bg-slate-900/50 backdrop-blur-sm border border-slate-700/50 rounded-2xl overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full min-w-[1200px]">
+                    <thead className="bg-slate-800/70 border-b border-slate-700/50">
+                      <tr>
+                        <th className="w-12 px-3 py-4 sticky left-0 bg-slate-800/70">
+                          <input
+                            type="checkbox"
+                            checked={selectedLeads.length === leads.length && leads.length > 0}
+                            onChange={toggleAllLeads}
+                            className="w-4 h-4 text-yellow-600 bg-slate-700 border-slate-600 rounded focus:ring-yellow-500 focus:ring-2"
+                          />
+                        </th>
+                        <th className="w-20 px-3 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">ID</th>
+                        <th className="w-28 px-3 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Status</th>
+                        <th className="w-48 px-3 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-wider sticky left-16 bg-slate-800/70">Lead Name</th>
+                        <th className="w-32 px-3 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Phone</th>
+                        <th className="w-48 px-3 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Email</th>
+                        <th className="w-20 px-3 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">State</th>
+                        <th className="w-32 px-3 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Type</th>
+                        <th className="w-24 px-3 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Quality</th>
+                        <th className="w-32 px-3 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Date/Time</th>
+                        <th className="w-24 px-3 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Desc</th>
+                        <th className="w-32 px-3 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Tags</th>
+                        <th className="w-28 px-3 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Purchased</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-800/50">
+                      {leads.map((lead, index) => {
+                        const statusConfig = {
+                          new: { color: 'bg-red-500/20 text-red-400', label: 'New Lead' },
+                          contacted: { color: 'bg-blue-500/20 text-blue-400', label: 'Called' },
+                          appointment: { color: 'bg-purple-500/20 text-purple-400', label: 'Appointment' },
+                          sold: { color: 'bg-green-500/20 text-green-400', label: 'Sold' }
+                        };
+                        
+                        const config = statusConfig[lead.status as keyof typeof statusConfig] || statusConfig.new;
+                        const initials = lead.name.split(' ').map(n => n[0]).join('').toUpperCase();
+                        const avatarColors = ['bg-red-500', 'bg-blue-500', 'bg-green-500', 'bg-purple-500', 'bg-yellow-500', 'bg-pink-500'];
+                        const avatarColor = avatarColors[index % avatarColors.length];
+
+                        return (
+                          <tr 
+                            key={lead.id} 
+                            className={`hover:bg-slate-800/30 transition-colors cursor-pointer ${
+                              selectedLeads.includes(lead.id) ? 'bg-yellow-400/5 border-l-4 border-yellow-400' : ''
+                            }`}
+                          >
+                            <td className="px-3 py-4 sticky left-0 bg-slate-900/80 backdrop-blur-sm">
+                              <input
+                                type="checkbox"
+                                checked={selectedLeads.includes(lead.id)}
+                                onChange={() => toggleLeadSelection(lead.id)}
+                                onClick={(e) => e.stopPropagation()}
+                                className="w-4 h-4 text-yellow-600 bg-slate-700 border-slate-600 rounded focus:ring-yellow-500 focus:ring-2"
+                              />
+                            </td>
+                            <td className="px-3 py-4 whitespace-nowrap">
+                              <span className="text-yellow-400 font-mono font-bold text-xs hover:text-yellow-300 cursor-pointer">
+                                {lead.id}
+                              </span>
+                            </td>
+                            <td className="px-3 py-4 whitespace-nowrap">
+                              <span className={`px-2 py-1 rounded text-xs font-medium ${config.color}`}>
+                                {config.label === 'New Lead' ? 'New' : 
+                                 config.label === 'Called' ? 'Called' : config.label}
+                              </span>
+                            </td>
+                            <td 
+                              className="px-3 py-4 whitespace-nowrap cursor-pointer sticky left-16 bg-slate-900/80 backdrop-blur-sm"
+                              onClick={() => openLeadModal(lead)}
+                            >
+                              <div className="flex items-center">
+                                <div className={`w-7 h-7 ${avatarColor} rounded-full flex items-center justify-center text-white font-bold text-xs mr-2`}>
+                                  {initials}
+                                </div>
+                                <div className="min-w-0">
+                                  <div className="text-white font-medium hover:text-yellow-400 transition-colors text-sm truncate">
+                                    {lead.name}
+                                  </div>
+                                  <div className="text-slate-400 text-xs truncate">
+                                    {lead.id}
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="px-3 py-4 whitespace-nowrap">
+                              <div className="flex items-center space-x-1">
+                                <Phone className="w-3 h-3 text-green-400 flex-shrink-0" />
+                                <span className="text-slate-300 font-mono text-xs truncate">
+                                  {lead.phone}
+                                </span>
+                              </div>
+                            </td>
+                            <td className="px-3 py-4 whitespace-nowrap">
+                              <div className="flex items-center space-x-1">
+                                <Mail className="w-3 h-3 text-blue-400 flex-shrink-0" />
+                                <span className="text-slate-300 text-xs truncate max-w-[180px]">
+                                  {lead.email}
+                                </span>
+                              </div>
+                            </td>
+                            <td className="px-3 py-4 whitespace-nowrap">
+                              <span className="text-white font-medium text-sm">
+                                {lead.location.split(', ')[1] || lead.location}
+                              </span>
+                            </td>
+                            <td className="px-3 py-4 whitespace-nowrap">
+                              <span className="px-2 py-1 bg-purple-500/20 text-purple-300 rounded text-xs font-medium truncate">
+                                {lead.type.replace(' Premium', '').replace(' Elite', '')}
+                              </span>
+                            </td>
+                            <td className="px-3 py-4 whitespace-nowrap">
+                              <div className="flex items-center space-x-1">
+                                <Star className="w-3 h-3 text-yellow-400 fill-current flex-shrink-0" />
+                                <span className="text-yellow-400 font-bold text-sm">
+                                  {lead.quality}
+                                </span>
+                              </div>
+                            </td>
+                            <td className="px-3 py-4 whitespace-nowrap">
+                              <div className="text-slate-300 text-xs">
+                                {new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                              </div>
+                              <div className="text-slate-500 text-xs">
+                                {new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+                              </div>
+                            </td>
+                            <td className="px-3 py-4 whitespace-nowrap">
+                              <span className="text-slate-400 text-xs">
+                                Premium
+                              </span>
+                            </td>
+                            <td className="px-3 py-4 whitespace-nowrap">
+                              <div className="flex flex-col space-y-1">
+                                <span className="px-2 py-0.5 bg-green-500/20 text-green-400 rounded text-xs">
+                                  Verified
+                                </span>
+                                <span className="px-2 py-0.5 bg-blue-500/20 text-blue-400 rounded text-xs">
+                                  Premium
+                                </span>
+                              </div>
+                            </td>
+                            <td className="px-3 py-4 whitespace-nowrap">
+                              <div className="text-slate-300 text-xs">
+                                {lead.purchasedAt}
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Table Footer with Pagination */}
+                <div className="bg-slate-800/50 border-t border-slate-700/50 px-6 py-3">
+                  <div className="flex items-center justify-between">
+                    <div className="text-slate-400 text-sm">
+                      Showing 1 to {leads.length} of {leads.length} entries
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <button className="px-3 py-1 bg-slate-700 hover:bg-slate-600 text-white rounded text-sm transition-colors">
+                        Previous
+                      </button>
+                      <button className="px-3 py-1 bg-yellow-600 text-white rounded text-sm">
+                        1
+                      </button>
+                      <button className="px-3 py-1 bg-slate-700 hover:bg-slate-600 text-white rounded text-sm transition-colors">
+                        Next
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Empty State for No Leads */}
+              {leads.length === 0 && (
+                <div className="text-center py-16">
+                  <Target className="w-20 h-20 text-slate-600 mx-auto mb-6" />
+                  <h3 className="text-2xl font-bold text-white mb-3">No Leads Yet</h3>
+                  <p className="text-slate-400 mb-6 max-w-md mx-auto">
+                    Start purchasing premium leads from our marketplace to see them here with full contact details and management tools.
+                  </p>
+                  <button 
+                    onClick={() => setActiveTab('marketplace')}
+                    className="px-6 py-3 bg-yellow-600 hover:bg-yellow-700 text-white rounded-xl font-semibold transition-all flex items-center mx-auto"
+                  >
+                    <ShoppingCart className="mr-2" size={20} />
+                    Browse Premium Leads
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
+          {activeTab === 'marketplace' && (
+            <div className="space-y-6">
+              {/* Marketplace Header */}
+              <div className="flex items-center justify-between">
+                <div>
+                  <h1 className="text-3xl font-bold text-white mb-2 flex items-center">
+                    <Crown className="mr-3 text-yellow-400" size={32} />
+                    Elite Lead Marketplace
+                  </h1>
+                  <p className="text-slate-400 text-lg">Lead drops • Bulk purchasing • Premium results</p>
+                </div>
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center gap-2 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">
+                    <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse"></div>
+                    <span className="text-red-400 font-semibold text-sm">LIVE DROPS</span>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-sm text-slate-400">Available Credits</div>
+                    <div className="text-2xl font-bold text-yellow-400">{credits}</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Supreme-Style Navigation Tabs */}
+              <div className="bg-slate-900/50 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-2">
+                <div className="grid grid-cols-2 gap-2">
+                  <button 
+                    onClick={() => setActiveMarketplace('drops')}
+                    className={`p-4 rounded-xl font-semibold transition-all text-center group ${
+                      activeMarketplace === 'drops' 
+                        ? 'bg-gradient-to-r from-red-500/20 to-orange-500/20 border border-red-500/50 text-red-300 shadow-lg shadow-red-500/20' 
+                        : 'text-slate-400 hover:text-white hover:bg-slate-800/50 hover:scale-105'
+                    }`}
+                  >
+                    <div className="flex items-center justify-center gap-3">
+                      <div className="w-3 h-3 bg-red-400 rounded-full animate-pulse group-hover:scale-110 transition-transform"></div>
+                      <span className="text-lg font-bold">🔥 DROPS</span>
+                    </div>
+                    <p className="text-xs mt-1 opacity-80 font-medium">Limited • $40-50/lead • FOMO</p>
+                  </button>
+                  
+                  <button 
+                    onClick={() => setActiveMarketplace('bulk')}
+                    className={`p-4 rounded-xl font-semibold transition-all text-center group ${
+                      activeMarketplace === 'bulk' 
+                        ? 'bg-gradient-to-r from-blue-500/20 to-cyan-500/20 border border-blue-500/50 text-blue-300 shadow-lg shadow-blue-500/20' 
+                        : 'text-slate-400 hover:text-white hover:bg-slate-800/50 hover:scale-105'
+                    }`}
+                  >
+                    <div className="flex items-center justify-center gap-3">
+                      <ShoppingCart className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                      <span className="text-lg font-bold">⚡ STORE</span>
+                    </div>
+                    <p className="text-xs mt-1 opacity-80 font-medium">24/7 • $25-35/lead • Volume</p>
+                  </button>
+                </div>
+              </div>
+
+              {/* LEAD DROPS SECTION */}
+              {activeMarketplace === 'drops' && (
+                <div className="space-y-6">
+                  {/* Next Drop Countdown */}
+                  <div className="bg-gradient-to-r from-red-900/20 to-orange-900/20 border border-red-500/30 rounded-2xl p-8 text-center">
+                    <div className="flex items-center justify-center gap-3 mb-4">
+                      <div className="w-4 h-4 bg-red-400 rounded-full animate-ping"></div>
+                      <h2 className="text-2xl font-bold text-red-400">⏰ NEXT DROP ALERT</h2>
+                      <div className="w-4 h-4 bg-red-400 rounded-full animate-ping"></div>
+                    </div>
+                    
+                    <div className="grid grid-cols-4 gap-4 max-w-md mx-auto mb-6">
+                      {(() => {
+                        const now = new Date();
+                        const diff = nextDropTime.getTime() - now.getTime();
+                        const hours = Math.floor(diff / (1000 * 60 * 60));
+                        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                        
+                        return [
+                          { label: 'HOURS', value: hours.toString().padStart(2, '0') },
+                          { label: 'MINS', value: minutes.toString().padStart(2, '0') },
+                          { label: 'SECS', value: seconds.toString().padStart(2, '0') },
+                        ].map((item, index) => (
+                          <div key={index} className="bg-red-500/20 border border-red-500/50 rounded-xl p-3">
+                            <div className="text-3xl font-bold text-red-300">{item.value}</div>
+                            <div className="text-xs text-red-400 font-medium">{item.label}</div>
+                          </div>
+                        ));
+                      })()}
+                    </div>
+                    
+                    <div className="space-y-2 mb-6">
+                      <h3 className="text-xl font-bold text-white">🎯 Premium IUL Drop #247</h3>
+                      <p className="text-slate-300">25 exclusive leads • 95%+ quality scores • Texas market</p>
+                      <div className="flex items-center justify-center gap-6 text-sm">
+                        <span className="text-yellow-400 font-semibold">💰 $42/lead</span>
+                        <span className="text-green-400 font-semibold">🔒 100% Exclusive</span>
+                        <span className="text-purple-400 font-semibold">⚡ Instant Access</span>
+                      </div>
+                    </div>
+                    
+                    <button className="bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white font-bold px-8 py-4 rounded-xl transition-all duration-300 shadow-lg shadow-red-500/25 text-lg">
+                      🔔 Join Wait List (2,847 agents waiting)
+                    </button>
+                  </div>
+
+                  {/* Recent Drop History */}
+                  <div className="bg-slate-900/50 backdrop-blur-sm border border-slate-700/50 rounded-xl p-6">
+                    <h3 className="text-xl font-bold text-white mb-6 flex items-center">
+                      <Timer className="mr-3 text-red-400" size={24} />
+                      Recent Drop History
+                    </h3>
+                    
+                    <div className="space-y-4">
+                      {[
+                        {
+                          id: '#246',
+                          type: 'Final Expense Elite',
+                          count: 30,
+                          price: 38,
+                          soldOut: '2.3 min',
+                          status: 'SOLD OUT',
+                          statusColor: 'text-red-400'
+                        },
+                        {
+                          id: '#245', 
+                          type: 'Mortgage Protection Pro',
+                          count: 18,
+                          price: 45,
+                          soldOut: '47 sec',
+                          status: 'SOLD OUT',
+                          statusColor: 'text-red-400'
+                        },
+                        {
+                          id: '#244',
+                          type: 'Trucker Insurance Platinum', 
+                          count: 22,
+                          price: 50,
+                          soldOut: '1.8 min',
+                          status: 'SOLD OUT', 
+                          statusColor: 'text-red-400'
+                        }
+                      ].map((drop, index) => (
+                        <div key={index} className="flex items-center justify-between p-4 bg-slate-800/30 border border-slate-700/50 rounded-xl">
+                          <div className="flex items-center space-x-4">
+                            <div className="text-lg font-bold text-white">{drop.id}</div>
+                            <div>
+                              <div className="font-semibold text-slate-300">{drop.type}</div>
+                              <div className="text-sm text-slate-400">{drop.count} leads • ${drop.price}/lead</div>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className={`font-bold ${drop.statusColor}`}>{drop.status}</div>
+                            <div className="text-xs text-slate-400">Sold in {drop.soldOut}</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Drop Stats */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="bg-gradient-to-r from-red-500/20 to-orange-500/20 border border-red-500/30 rounded-xl p-6 text-center">
+                      <div className="text-3xl font-bold text-red-400 mb-2">2.1 min</div>
+                      <div className="text-slate-300 font-medium">Avg Sell-Out Time</div>
+                      <div className="text-xs text-slate-400 mt-1">Last 10 drops</div>
+                    </div>
+                    
+                    <div className="bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/30 rounded-xl p-6 text-center">
+                      <div className="text-3xl font-bold text-green-400 mb-2">97.8%</div>
+                      <div className="text-slate-300 font-medium">Drop Quality Score</div>
+                      <div className="text-xs text-slate-400 mt-1">Elite tier average</div>
+                    </div>
+                    
+                    <div className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 rounded-xl p-6 text-center">
+                      <div className="text-3xl font-bold text-purple-400 mb-2">$42.50</div>
+                      <div className="text-slate-300 font-medium">Avg Drop Price</div>
+                      <div className="text-xs text-slate-400 mt-1">Premium tier leads</div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* BULK STORE SECTION */}
+              {activeMarketplace === 'bulk' && (
+                <div className="space-y-6">
+                  {/* Bulk Store Header */}
+                  <div className="bg-gradient-to-r from-blue-900/20 to-cyan-900/20 border border-blue-500/30 rounded-2xl p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h2 className="text-2xl font-bold text-blue-400 mb-2 flex items-center">
+                          <ShoppingCart className="mr-3" size={28} />
+                          ⚡ Premium Store - Always Open
+                        </h2>
+                        <p className="text-slate-300">Professional quality leads available 24/7 • Volume discounts • Instant delivery</p>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-sm text-slate-400">In Stock</div>
+                        <div className="text-3xl font-bold text-blue-400">47</div>
+                        <div className="text-xs text-slate-400">Premium leads</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Bulk Purchase Options */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="bg-slate-900/50 border border-slate-700/50 rounded-xl p-6">
+                      <div className="text-center mb-4">
+                        <div className="text-2xl font-bold text-green-400 mb-1">Trial Pack</div>
+                        <div className="text-slate-400">Get started</div>
+                      </div>
+                      <div className="space-y-3 mb-6">
+                        <div className="flex justify-between">
+                          <span className="text-slate-300">5 Premium Leads</span>
+                          <span className="text-white font-semibold">$32/each</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-300">Quality Score</span>
+                          <span className="text-yellow-400">85-95%</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-300">Total Cost</span>
+                          <span className="text-green-400 text-xl font-bold">$160</span>
+                        </div>
+                      </div>
+                      <button className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl transition-all">
+                        Add to Cart
+                      </button>
+                    </div>
+
+                    <div className="bg-gradient-to-r from-blue-500/20 to-cyan-500/20 border border-blue-500/50 rounded-xl p-6 relative">
+                      <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
+                        <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-bold">POPULAR</span>
+                      </div>
+                      <div className="text-center mb-4">
+                        <div className="text-2xl font-bold text-blue-400 mb-1">Scale Pack</div>
+                        <div className="text-slate-400">Best value</div>
+                      </div>
+                      <div className="space-y-3 mb-6">
+                        <div className="flex justify-between">
+                          <span className="text-slate-300">25 Premium Leads</span>
+                          <span className="text-white font-semibold">$28/each</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-300">Quality Score</span>
+                          <span className="text-yellow-400">90-98%</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-300">Total Cost</span>
+                          <span className="text-blue-400 text-xl font-bold">$700</span>
+                        </div>
+                      </div>
+                      <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition-all">
+                        Add to Cart
+                      </button>
+                    </div>
+
+                    <div className="bg-slate-900/50 border border-slate-700/50 rounded-xl p-6">
+                      <div className="text-center mb-4">
+                        <div className="text-2xl font-bold text-purple-400 mb-1">Elite Pack</div>
+                        <div className="text-slate-400">Maximum ROI</div>
+                      </div>
+                      <div className="space-y-3 mb-6">
+                        <div className="flex justify-between">
+                          <span className="text-slate-300">50 Premium Leads</span>
+                          <span className="text-white font-semibold">$25/each</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-300">Quality Score</span>
+                          <span className="text-yellow-400">92-100%</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-300">Total Cost</span>
+                          <span className="text-purple-400 text-xl font-bold">$1,250</span>
+                        </div>
+                      </div>
+                      <button className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-xl transition-all">
+                        Add to Cart
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Elite Filters */}
+
+              {/* Elite Filters */}
+              <div className="bg-slate-900/50 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center space-x-4">
+                    <h2 className="text-xl font-bold text-white flex items-center">
+                      <BarChart3 className="mr-3 text-yellow-400" size={24} />
+                      Elite Lead Intelligence
+                    </h2>
+                  </div>
+                  
+                  <div className="flex items-center space-x-6 text-sm">
+                    <div className="text-red-400 flex items-center">
+                      <div className="w-2 h-2 bg-red-400 rounded-full mr-2"></div>
+                      <span className="font-semibold">4</span>
+                      <span className="text-slate-400 ml-1">Fresh Leads</span>
+                    </div>
+                    <div className="text-green-400 flex items-center">
+                      <div className="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
+                      <span className="font-semibold">18.3%</span>
+                      <span className="text-slate-400 ml-1">Avg Close Rate</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Quick Filters */}
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                  <select className="w-full bg-slate-800/50 border border-slate-600/50 text-white rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500/50 transition-all">
+                    <option value="All Types">All Types</option>
+                    <option value="IUL">IUL Premium</option>
+                    <option value="Final Expense">Final Expense Elite</option>
+                    <option value="Mortgage Protection">Mortgage Protection Pro</option>
+                    <option value="Trucker Insurance">Trucker Insurance</option>
+                  </select>
+
+                  <select className="w-full bg-slate-800/50 border border-slate-600/50 text-white rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500/50 transition-all">
+                    <option value="All States">All States</option>
+                    <option value="TX">Texas</option>
+                    <option value="FL">Florida</option>
+                    <option value="CA">California</option>
+                    <option value="NY">New York</option>
+                  </select>
+
+                  <select className="w-full bg-slate-800/50 border border-slate-600/50 text-white rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500/50 transition-all">
+                    <option value="All">All Quality</option>
+                    <option value="95-100">🔥 Elite (95-100)</option>
+                    <option value="85-94">⭐ Premium (85-94)</option>
+                    <option value="75-84">📈 Standard (75-84)</option>
+                  </select>
+
+                  <select className="w-full bg-slate-800/50 border border-slate-600/50 text-white rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500/50 transition-all">
+                    <option value="All Tiers">All Tiers</option>
+                    <option value="platinum">👑 Platinum Elite</option>
+                    <option value="gold">🥇 Gold Premium</option>
+                    <option value="silver">🥈 Silver Standard</option>
+                  </select>
+
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={16} />
+                    <input
+                      type="text"
+                      placeholder="Search leads..."
+                      className="w-full bg-slate-800/50 border border-slate-600/50 text-white rounded-lg pl-10 pr-3 py-2 text-sm focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500/50 transition-all"
+                    />
+                  </div>
+
+                  <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition-all duration-200 font-medium">
+                    Apply Filters
+                  </button>
+                </div>
+              </div>
+
+              {/* Premium Leads Grid */}
+              <div className="grid gap-6">
+                {marketplaceLeads.map((lead, index) => {
+                  const tiers = ['platinum', 'gold', 'silver', 'bronze'];
+                  const tier = tiers[index % tiers.length];
+                  
+                  const tierConfigs = {
+                    platinum: {
+                      icon: '👑',
+                      label: 'Platinum Elite',
+                      bgColor: 'bg-gradient-to-r from-cyan-500/20 to-blue-500/20',
+                      borderColor: 'border-cyan-400/50',
+                      textColor: 'text-cyan-300',
+                      buttonColor: 'bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 shadow-lg shadow-cyan-500/25'
+                    },
+                    gold: {
+                      icon: '🥇',
+                      label: 'Gold Premium',
+                      bgColor: 'bg-gradient-to-r from-yellow-500/20 to-amber-500/20',
+                      borderColor: 'border-yellow-400/50',
+                      textColor: 'text-yellow-300',
+                      buttonColor: 'bg-gradient-to-r from-yellow-600 to-amber-600 hover:from-yellow-700 hover:to-amber-700 shadow-lg shadow-yellow-500/25'
+                    },
+                    silver: {
+                      icon: '🥈',
+                      label: 'Silver Standard',
+                      bgColor: 'bg-gradient-to-r from-slate-500/20 to-gray-500/20',
+                      borderColor: 'border-slate-400/50',
+                      textColor: 'text-slate-300',
+                      buttonColor: 'bg-gradient-to-r from-slate-600 to-gray-600 hover:from-slate-700 hover:to-gray-700'
+                    },
+                    bronze: {
+                      icon: '🥉',
+                      label: 'Bronze Basic',
+                      bgColor: 'bg-gradient-to-r from-orange-500/20 to-amber-600/20',
+                      borderColor: 'border-orange-400/50',
+                      textColor: 'text-orange-300',
+                      buttonColor: 'bg-gradient-to-r from-orange-600 to-amber-700 hover:from-orange-700 hover:to-amber-800'
+                    }
+                  };
+                  
+                  const config = tierConfigs[tier as keyof typeof tierConfigs];
+
+                  return (
+                    <div key={lead.id} className={`${config.bgColor} backdrop-blur-sm border ${config.borderColor} rounded-2xl p-6 transition-all hover:scale-[1.01]`}>
+                      <div className="flex items-start justify-between">
+                        {/* Lead Information */}
+                        <div className="flex-1">
+                          {/* Header with Tier */}
+                          <div className="flex items-center space-x-3 mb-4">
+                            <div className={`px-3 py-1.5 rounded-lg ${config.bgColor} ${config.borderColor} border`}>
+                              <span className="font-semibold text-sm flex items-center">
+                                <span className="mr-1">{config.icon}</span>
+                                {config.label}
+                              </span>
+                            </div>
+                            
+                            <div className="px-3 py-1 bg-slate-700/50 text-slate-300 text-sm rounded-lg">
+                              {lead.type}
+                            </div>
+
+                            <div className="flex items-center space-x-1">
+                              <Star className="text-yellow-400 fill-current" size={18} />
+                              <span className="font-semibold text-yellow-300">{lead.quality}</span>
+                            </div>
+
+                            <div className="flex items-center space-x-1 bg-green-500/20 text-green-400 px-2 py-1 rounded-lg text-sm border border-green-500/30">
+                              <CheckCircle size={16} />
+                              <span className="font-semibold">VERIFIED</span>
+                            </div>
+                          </div>
+
+                          {/* Lead Details */}
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                            <div>
+                              <h3 className="font-bold text-xl text-white mb-2">{lead.id}</h3>
+                              <div className="space-y-2 text-sm">
+                                <div className="flex items-center space-x-2 text-slate-300">
+                                  <MapPin size={16} />
+                                  <span>Location: {lead.location}</span>
+                                </div>
+                                <div className="flex items-center space-x-2 text-slate-300">
+                                  <Target size={16} />
+                                  <span>Type: {lead.type}</span>
+                                </div>
+                                <div className="flex items-center space-x-2 text-slate-300">
+                                  <Timer size={16} />
+                                  <span>Generated: 5-10 minutes ago</span>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div>
+                              <div className="text-slate-400 text-sm font-medium mb-2">Quality Indicators</div>
+                              <div className="space-y-2">
+                                <div className="flex items-center space-x-2 text-green-400 text-sm">
+                                  <CheckCircle size={16} />
+                                  <span>Contact Info Verified</span>
+                                </div>
+                                <div className="flex items-center space-x-2 text-green-400 text-sm">
+                                  <Shield size={16} />
+                                  <span>High Buying Intent</span>
+                                </div>
+                                <div className="flex items-center space-x-2 text-blue-400 text-sm">
+                                  <Crown size={16} />
+                                  <span>100% Exclusive</span>
+                                </div>
+                                <div className={`p-2 rounded-lg ${config.bgColor} border ${config.borderColor}`}>
+                                  <div className="text-xs text-slate-400">Conversion Probability</div>
+                                  <div className="font-bold text-white">{Math.min(95, Math.floor(lead.quality * 0.95))}%</div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="bg-slate-700/30 border border-slate-600 rounded-lg p-3">
+                            <p className="text-slate-400 text-sm">
+                              <strong className="text-slate-300">Privacy Protected:</strong> Contact details and personal information 
+                              will be revealed immediately after purchase. This lead has not been sold to any other agent.
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Pricing and Purchase */}
+                        <div className="text-right ml-6">
+                          <div className="mb-4">
+                            <div className="text-3xl font-bold text-white mb-1">
+                              ${lead.price.toFixed(2)}
+                            </div>
+                            <div className="text-xs text-slate-400">
+                              Premium tier pricing
+                            </div>
+                          </div>
+
+                          <div className="space-y-2 mb-4 text-sm">
+                            <div className="p-2 bg-slate-800/50 rounded-lg">
+                              <div className="text-slate-400">Credit Cost</div>
+                              <div className="font-semibold text-yellow-300">3 credits</div>
+                            </div>
+                          </div>
+
+                          <button
+                            onClick={() => purchaseLead(lead.id)}
+                            disabled={credits < 3}
+                            className={`w-full px-6 py-3 rounded-xl font-semibold transition-all text-white disabled:opacity-50 disabled:cursor-not-allowed ${config.buttonColor}`}
+                          >
+                            <Shield className="inline mr-2" size={18} />
+                            Purchase Elite Lead
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+                </div>
+              )}
+            </div>
+          )}
+
+              {/* Performance Stats */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div className="bg-gradient-to-r from-emerald-500/20 to-emerald-600/20 backdrop-blur-sm border border-emerald-500/30 rounded-xl p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-emerald-100 text-sm font-medium">Conversion Rate</p>
+                      <p className="text-white text-2xl font-bold">18.3%</p>
+                      <p className="text-emerald-300 text-xs">vs 3% industry</p>
+                    </div>
+                    <TrendingUp className="text-emerald-400" size={32} />
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-r from-blue-500/20 to-blue-600/20 backdrop-blur-sm border border-blue-500/30 rounded-xl p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-blue-100 text-sm font-medium">Available Leads</p>
+                      <p className="text-white text-2xl font-bold">{marketplaceLeads.length}</p>
+                      <p className="text-blue-300 text-xs">Premium quality</p>
+                    </div>
+                    <Target className="text-blue-400" size={32} />
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 backdrop-blur-sm border border-yellow-500/30 rounded-xl p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-yellow-100 text-sm font-medium">Avg Lead Value</p>
+                      <p className="text-white text-2xl font-bold">$30.00</p>
+                      <p className="text-yellow-300 text-xs">Premium tier</p>
+                    </div>
+                    <DollarSign className="text-yellow-400" size={32} />
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-r from-purple-500/20 to-purple-600/20 backdrop-blur-sm border border-purple-500/30 rounded-xl p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-purple-100 text-sm font-medium">Elite Tier</p>
+                      <p className="text-white text-2xl font-bold">👑 2</p>
+                      <p className="text-purple-300 text-xs">Platinum leads</p>
+                    </div>
+                    <Crown className="text-purple-400" size={32} />
+                  </div>
+                </div>
+              </div>
+
+              {/* Lead Drops Section */}
+              {activeMarketplace === 'drops' && (
+                <div className="space-y-6">
+                  {/* Drop Timer & Status */}
+                  <div className="bg-gradient-to-r from-red-500/20 to-orange-500/20 backdrop-blur-sm border border-red-500/30 rounded-2xl p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h2 className="text-2xl font-bold text-white mb-2 flex items-center">
+                          🔥 <span className="ml-2">Live Lead Drop</span>
+                        </h2>
+                        <p className="text-red-200 text-sm">
+                          Premium leads with exclusive access • Limited quantity • Dynamic pricing
+                        </p>
+                      </div>
+                      
+                      <div className="text-center">
+                        <div className="bg-slate-900/80 border border-red-500/50 rounded-xl p-4">
+                          <div className="text-red-300 text-sm font-medium mb-1">NEXT DROP IN</div>
+                          <div className="text-white text-2xl font-bold font-mono">
+                            {(() => {
+                              const timeLeft = Math.max(0, nextDropTime.getTime() - Date.now())
+                              const minutes = Math.floor(timeLeft / (1000 * 60))
+                              const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000)
+                              return `${minutes}:${String(seconds).padStart(2, '0')}`
+                            })()}
+                          </div>
+                          <div className="text-red-400 text-xs mt-1">Minutes remaining</div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Current Drop Status */}
+                    <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
+                      <div className="bg-slate-900/50 border border-slate-700 rounded-lg p-3">
+                        <div className="text-slate-400 text-xs">Available Now</div>
+                        <div className="text-white font-bold text-lg">{dropLeads.length}</div>
+                        <div className="text-red-400 text-xs">Premium leads</div>
+                      </div>
+                      <div className="bg-slate-900/50 border border-slate-700 rounded-lg p-3">
+                        <div className="text-slate-400 text-xs">Price Range</div>
+                        <div className="text-white font-bold text-lg">$38-45</div>
+                        <div className="text-yellow-400 text-xs">Dropping every 5min</div>
+                      </div>
+                      <div className="bg-slate-900/50 border border-slate-700 rounded-lg p-3">
+                        <div className="text-slate-400 text-xs">Avg Quality</div>
+                        <div className="text-white font-bold text-lg">96%</div>
+                        <div className="text-green-400 text-xs">Premium tier</div>
+                      </div>
+                      <div className="bg-slate-900/50 border border-slate-700 rounded-lg p-3">
+                        <div className="text-slate-400 text-xs">Est Conversion</div>
+                        <div className="text-white font-bold text-lg">22%</div>
+                        <div className="text-purple-400 text-xs">Elite performance</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Drop Leads Grid */}
+                  <div className="grid gap-4">
+                    {dropLeads.map((lead, index) => {
+                      const isHot = index < 2; // First 2 leads are "HOT"
+                      
+                      return (
+                        <div key={lead.id} className="bg-gradient-to-r from-red-500/20 to-orange-500/20 backdrop-blur-sm border border-red-500/30 rounded-xl p-6 relative overflow-hidden">
+                          {/* Hot indicator */}
+                          {isHot && (
+                            <div className="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold animate-pulse">
+                              🔥 HOT
+                            </div>
+                          )}
+                          
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <div className="flex items-center space-x-3 mb-4">
+                                <div className="px-3 py-1.5 rounded-lg bg-red-500/30 border border-red-500/50">
+                                  <span className="font-semibold text-sm text-red-200 flex items-center">
+                                    <span className="mr-1">👑</span>
+                                    Drop Lead - Limited Time
+                                  </span>
+                                </div>
+                                
+                                <div className="px-3 py-1 bg-slate-700/50 text-slate-300 text-sm rounded-lg">
+                                  {lead.type}
+                                </div>
+
+                                <div className="flex items-center space-x-1">
+                                  <Star className="text-yellow-400 fill-current" size={18} />
+                                  <span className="font-semibold text-yellow-300">{lead.quality}</span>
+                                </div>
+                              </div>
+
+                              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
+                                <div>
+                                  <h3 className="font-bold text-xl text-white mb-2">{lead.id}</h3>
+                                  <div className="space-y-2 text-sm">
+                                    <div className="flex items-center space-x-2 text-slate-300">
+                                      <MapPin size={16} />
+                                      <span>{lead.location}</span>
+                                    </div>
+                                    <div className="flex items-center space-x-2 text-slate-300">
+                                      <Timer size={16} />
+                                      <span>Generated 2 minutes ago</span>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div>
+                                  <div className="text-slate-400 text-sm font-medium mb-2">Drop Features</div>
+                                  <div className="space-y-1 text-xs">
+                                    <div className="text-red-400">🔥 Highest Quality Tier</div>
+                                    <div className="text-yellow-400">⚡ Instant Access</div>
+                                    <div className="text-green-400">🛡️ 100% Exclusive</div>
+                                    <div className="text-purple-400">💎 Premium Support</div>
+                                  </div>
+                                </div>
+
+                                <div>
+                                  <div className="text-slate-400 text-sm font-medium mb-2">Price Evolution</div>
+                                  <div className="space-y-1 text-xs">
+                                    <div className="text-slate-300">Started: $50.00</div>
+                                    <div className="text-yellow-400">Now: ${lead.price.toFixed(2)}</div>
+                                    <div className="text-green-400">Next drop: ${(lead.price * 0.9).toFixed(2)}</div>
+                                    <div className="text-slate-400">Min: ${(lead.price * 0.6).toFixed(2)}</div>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="bg-slate-700/30 border border-slate-600 rounded-lg p-3">
+                                <p className="text-slate-400 text-sm">
+                                  <strong className="text-red-300">⏰ Limited Time:</strong> This premium drop lead expires in 
+                                  <strong className="text-white"> {Math.floor(Math.random() * 40 + 10)} minutes</strong> or when sold.
+                                </p>
+                              </div>
+                            </div>
+
+                            {/* Pricing and Purchase */}
+                            <div className="text-right ml-6">
+                              <div className="mb-4">
+                                <div className="text-3xl font-bold text-white mb-1 flex items-center justify-end">
+                                  <div className="text-red-400 line-through text-lg mr-2">${(lead.price * 1.2).toFixed(2)}</div>
+                                  ${lead.price.toFixed(2)}
+                                </div>
+                                <div className="text-xs text-red-300 font-medium">
+                                  Price drops every 5 min
+                                </div>
+                              </div>
+
+                              <div className="space-y-2 mb-4 text-sm">
+                                <div className="p-2 bg-slate-800/50 rounded-lg">
+                                  <div className="text-slate-400">Credit Cost</div>
+                                  <div className="font-semibold text-yellow-300">4 credits</div>
+                                </div>
+                              </div>
+
+                              <button
+                                onClick={() => purchaseLead(lead.id)}
+                                disabled={credits < 4}
+                                className="w-full px-6 py-3 rounded-xl font-semibold transition-all text-white bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-red-500/25"
+                              >
+                                <Crown className="inline mr-2" size={18} />
+                                Secure Drop Lead
+                              </button>
+
+                              <div className="text-center mt-2">
+                                <span className="text-xs text-slate-400">
+                                  {Math.floor(Math.random() * 5 + 2)} agents viewing
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Bulk Store Section */}
+              {activeMarketplace === 'bulk' && (
+                <div className="space-y-6">
+                  {/* Bulk Store Header */}
+                  <div className="bg-gradient-to-r from-blue-500/20 to-purple-500/20 backdrop-blur-sm border border-blue-500/30 rounded-2xl p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h2 className="text-2xl font-bold text-white mb-2 flex items-center">
+                          <ShoppingCart className="mr-3 text-blue-400" size={28} />
+                          Bulk Lead Store
+                        </h2>
+                        <p className="text-blue-200 text-sm">
+                          Always available inventory • Volume discounts • Consistent supply
+                        </p>
+                      </div>
+                      
+                      <div className="text-center">
+                        <div className="bg-slate-900/80 border border-blue-500/50 rounded-xl p-4">
+                          <div className="text-blue-300 text-sm font-medium mb-1">IN STOCK</div>
+                          <div className="text-white text-2xl font-bold">
+                            {bulkLeads.length + 94}+
+                          </div>
+                          <div className="text-blue-400 text-xs mt-1">Ready to ship</div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Bulk Pricing Tiers */}
+                    <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
+                      <div className="bg-slate-900/50 border border-slate-700 rounded-lg p-3 text-center">
+                        <div className="text-slate-400 text-xs">1-9 leads</div>
+                        <div className="text-white font-bold text-lg">$25-32</div>
+                        <div className="text-slate-400 text-xs">Standard rate</div>
+                      </div>
+                      <div className="bg-blue-500/20 border border-blue-500/50 rounded-lg p-3 text-center">
+                        <div className="text-blue-300 text-xs">10-24 leads</div>
+                        <div className="text-white font-bold text-lg">10% OFF</div>
+                        <div className="text-green-400 text-xs font-semibold">$22.50-28.80</div>
+                      </div>
+                      <div className="bg-purple-500/20 border border-purple-500/50 rounded-lg p-3 text-center">
+                        <div className="text-purple-300 text-xs">25-49 leads</div>
+                        <div className="text-white font-bold text-lg">15% OFF</div>
+                        <div className="text-green-400 text-xs font-semibold">$21.25-27.20</div>
+                      </div>
+                      <div className="bg-yellow-500/20 border border-yellow-500/50 rounded-lg p-3 text-center">
+                        <div className="text-yellow-300 text-xs">50+ leads</div>
+                        <div className="text-white font-bold text-lg">20% OFF</div>
+                        <div className="text-green-400 text-xs font-semibold">$20.00-25.60</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Bulk Purchase Tools */}
+                  <div className="bg-slate-900/50 backdrop-blur-sm border border-slate-700/50 rounded-xl p-6">
+                    <div className="flex items-center justify-between mb-6">
+                      <h3 className="text-lg font-bold text-white">Quick Bulk Orders</h3>
+                      <button className="text-blue-400 hover:text-blue-300 text-sm font-medium">
+                        Configure Custom Order
+                      </button>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      {[
+                        { qty: 10, type: 'IUL Premium', price: 288, discount: '10%' },
+                        { qty: 25, type: 'Mixed Types', price: 680, discount: '15%' },
+                        { qty: 50, type: 'Final Expense', price: 1280, discount: '20%' },
+                        { qty: 100, type: 'Enterprise Mix', price: 2400, discount: '25%' }
+                      ].map((bundle, index) => (
+                        <div key={index} className="bg-slate-800/50 border border-slate-600/50 rounded-lg p-4 hover:border-blue-500/50 transition-all cursor-pointer">
+                          <div className="text-blue-300 font-semibold mb-2">{bundle.qty} Leads</div>
+                          <div className="text-slate-300 text-sm mb-2">{bundle.type}</div>
+                          <div className="text-white font-bold text-lg">${bundle.price}</div>
+                          <div className="text-green-400 text-xs font-semibold">{bundle.discount} OFF</div>
+                          <button className="w-full mt-3 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded text-sm font-medium transition-colors">
+                            Quick Add
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Individual Bulk Leads */}
+                  <div className="grid gap-4">
+                    {bulkLeads.map((lead, index) => (
+                      <div key={lead.id} className="bg-slate-900/50 backdrop-blur-sm border border-slate-700/50 rounded-xl p-6">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <div className="flex items-center space-x-3 mb-4">
+                              <div className="px-3 py-1.5 rounded-lg bg-blue-500/20 border border-blue-500/50">
+                                <span className="font-semibold text-sm text-blue-200">
+                                  Standard Inventory
+                                </span>
+                              </div>
+                              
+                              <div className="px-3 py-1 bg-slate-700/50 text-slate-300 text-sm rounded-lg">
+                                {lead.type}
+                              </div>
+
+                              <div className="flex items-center space-x-1">
+                                <Star className="text-yellow-400 fill-current" size={16} />
+                                <span className="font-semibold text-yellow-300 text-sm">{lead.quality}</span>
+                              </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                              <div>
+                                <h3 className="font-bold text-lg text-white mb-2">{lead.id}</h3>
+                                <div className="space-y-2 text-sm">
+                                  <div className="flex items-center space-x-2 text-slate-300">
+                                    <MapPin size={14} />
+                                    <span>{lead.location}</span>
+                                  </div>
+                                  <div className="flex items-center space-x-2 text-slate-300">
+                                    <Target size={14} />
+                                    <span>{lead.type}</span>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div>
+                                <div className="text-slate-400 text-sm font-medium mb-2">Available Features</div>
+                                <div className="space-y-1 text-xs">
+                                  <div className="text-green-400">✅ Verified Contact Info</div>
+                                  <div className="text-blue-400">📊 Quality Guaranteed</div>
+                                  <div className="text-purple-400">🔄 24h Support</div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="text-right ml-6">
+                            <div className="mb-4">
+                              <div className="text-2xl font-bold text-white mb-1">
+                                ${lead.price.toFixed(2)}
+                              </div>
+                              <div className="text-xs text-slate-400">
+                                Standard pricing
+                              </div>
+                            </div>
+
+                            <div className="space-y-2 mb-4 text-sm">
+                              <div className="p-2 bg-slate-800/50 rounded-lg">
+                                <div className="text-slate-400">Credit Cost</div>
+                                <div className="font-semibold text-yellow-300">3 credits</div>
+                              </div>
+                            </div>
+
+                            <button
+                              onClick={() => purchaseLead(lead.id)}
+                              disabled={credits < 3}
+                              className="w-full px-6 py-3 rounded-xl font-semibold transition-all text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              <ShoppingCart className="inline mr-2" size={16} />
+                              Add to Cart
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {activeTab === 'analytics' && (
+            <div className="space-y-8">
+              {/* Analytics Header */}
+              <div className="flex items-center justify-between">
+                <div>
+                  <h1 className="text-3xl font-bold text-white mb-2 flex items-center">
+                    <BarChart3 className="mr-3 text-yellow-400" size={32} />
+                    Premium Analytics Intelligence
+                  </h1>
+                  <p className="text-slate-400 text-lg">Real-time business intelligence and performance metrics</p>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <select className="bg-slate-800/50 border border-slate-600/50 text-white rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500/50 transition-all">
+                    <option value="This Month">This Month</option>
+                    <option value="Last Month">Last Month</option>
+                    <option value="Last 3 Months">Last 3 Months</option>
+                    <option value="This Year">This Year</option>
+                  </select>
+                  <button className="px-4 py-2 bg-slate-700/50 hover:bg-slate-600/50 text-white text-sm rounded-lg transition-all flex items-center border border-slate-600/50">
+                    <Download className="mr-2" size={16} />
+                    Export Report
+                  </button>
+                </div>
+              </div>
+
+              {/* Key Performance Metrics */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div className="bg-gradient-to-br from-emerald-500/20 to-emerald-600/20 backdrop-blur-sm border border-emerald-500/30 rounded-xl p-6">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="p-2 bg-emerald-500/20 rounded-lg">
+                      <DollarSign className="text-emerald-400" size={24} />
+                    </div>
+                    <span className="text-emerald-400 text-sm font-medium">+23.5%</span>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-emerald-100 text-sm font-medium">Total Revenue</p>
+                    <p className="text-white text-2xl font-bold">${stats.revenue.toLocaleString()}</p>
+                    <p className="text-emerald-300 text-xs">Premium tier performance</p>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-br from-blue-500/20 to-blue-600/20 backdrop-blur-sm border border-blue-500/30 rounded-xl p-6">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="p-2 bg-blue-500/20 rounded-lg">
+                      <Users className="text-blue-400" size={24} />
+                    </div>
+                    <span className="text-blue-400 text-sm font-medium">+12.3%</span>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-blue-100 text-sm font-medium">Total Leads</p>
+                    <p className="text-white text-2xl font-bold">{stats.totalLeads + marketplaceLeads.length}</p>
+                    <p className="text-blue-300 text-xs">High-quality prospects</p>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-br from-yellow-500/20 to-yellow-600/20 backdrop-blur-sm border border-yellow-500/30 rounded-xl p-6">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="p-2 bg-yellow-500/20 rounded-lg">
+                      <TrendingUp className="text-yellow-400" size={24} />
+                    </div>
+                    <span className="text-yellow-400 text-sm font-medium">+8.2%</span>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-yellow-100 text-sm font-medium">Conversion Rate</p>
+                    <p className="text-white text-2xl font-bold">{stats.conversionRate}%</p>
+                    <p className="text-yellow-300 text-xs">vs 3% industry avg</p>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-br from-purple-500/20 to-purple-600/20 backdrop-blur-sm border border-purple-500/30 rounded-xl p-6">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="p-2 bg-purple-500/20 rounded-lg">
+                      <Crown className="text-purple-400" size={24} />
+                    </div>
+                    <span className="text-purple-400 text-sm font-medium">+15.7%</span>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-purple-100 text-sm font-medium">Avg Lead Value</p>
+                    <p className="text-white text-2xl font-bold">$30.25</p>
+                    <p className="text-purple-300 text-xs">Premium positioning</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Lead Status Pipeline & Quality Distribution */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {/* Lead Status Pipeline */}
+                <div className="bg-slate-900/50 backdrop-blur-sm border border-slate-700/50 rounded-xl p-6">
+                  <h3 className="text-lg font-bold text-white mb-4 flex items-center">
+                    <Target className="mr-2 text-slate-400" size={20} />
+                    Lead Status Pipeline
+                  </h3>
+                  <div className="space-y-3">
+                    {[
+                      { status: 'New Lead', count: stats.newLeads, color: 'bg-red-500', percentage: (stats.newLeads / stats.totalLeads) * 100 },
+                      { status: 'Contacted', count: 1, color: 'bg-blue-500', percentage: (1 / stats.totalLeads) * 100 },
+                      { status: 'Appointment', count: 0, color: 'bg-yellow-500', percentage: 0 },
+                      { status: 'Sold', count: 0, color: 'bg-green-500', percentage: 0 }
+                    ].map((item, index) => (
+                      <div key={index} className="flex items-center justify-between">
+                        <div className="flex items-center space-x-3 flex-1">
+                          <span className="text-slate-300 text-sm font-medium w-20">{item.status}</span>
+                          <div className="flex-1 bg-slate-700/50 rounded-full h-2 relative overflow-hidden">
+                            <div 
+                              className={`${item.color} h-full transition-all duration-500`}
+                              style={{ width: `${Math.max(item.percentage, 5)}%` }}
+                            />
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <span className="text-white font-semibold min-w-[1.5rem] text-right">{item.count}</span>
+                            <span className="text-slate-400 text-xs min-w-[3rem] text-right">{item.percentage.toFixed(1)}%</span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Quality Distribution */}
+                <div className="bg-slate-900/50 backdrop-blur-sm border border-slate-700/50 rounded-xl p-6">
+                  <h3 className="text-lg font-bold text-white mb-4 flex items-center">
+                    <Crown className="mr-2 text-yellow-400" size={20} />
+                    Quality Distribution
+                  </h3>
+                  <div className="space-y-4">
+                    {[
+                      { tier: 'Platinum Elite', icon: '👑', count: 2, color: 'bg-cyan-400', textColor: 'text-cyan-300' },
+                      { tier: 'Gold Premium', icon: '🥇', count: 1, color: 'bg-yellow-400', textColor: 'text-yellow-300' },
+                      { tier: 'Silver Standard', icon: '🥈', count: 1, color: 'bg-slate-400', textColor: 'text-slate-300' },
+                      { tier: 'Bronze Basic', icon: '🥉', count: 0, color: 'bg-orange-400', textColor: 'text-orange-300' }
+                    ].map((tier, index) => {
+                      const total = 4;
+                      const percentage = (tier.count / total) * 100;
+                      
+                      return (
+                        <div key={index} className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className={`text-sm font-medium ${tier.textColor} flex items-center`}>
+                              <span className="mr-2">{tier.icon}</span>
+                              {tier.tier}
+                            </span>
+                            <div className="flex items-center space-x-2">
+                              <span className="text-white font-semibold">{tier.count}</span>
+                              <span className="text-slate-400 text-xs">({percentage.toFixed(1)}%)</span>
+                            </div>
+                          </div>
+                          <div className="bg-slate-700/50 rounded-full h-2 overflow-hidden">
+                            <div 
+                              className={`${tier.color} h-full transition-all duration-500`}
+                              style={{ width: `${Math.max(percentage, 5)}%` }}
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              {/* Performance Trends */}
+              <div className="bg-slate-900/50 backdrop-blur-sm border border-slate-700/50 rounded-xl p-6">
+                <h3 className="text-lg font-bold text-white mb-4 flex items-center">
+                  <TrendingUp className="mr-2 text-green-400" size={20} />
+                  Performance Insights
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-700/50">
+                    <div className="text-green-400 text-2xl font-bold mb-2">18.3%</div>
+                    <div className="text-slate-300 font-medium">Close Rate</div>
+                    <div className="text-slate-400 text-sm">6x industry average (3%)</div>
+                    <div className="mt-2 bg-slate-700/50 rounded-full h-2">
+                      <div className="bg-green-400 h-2 rounded-full w-[92%]"></div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-700/50">
+                    <div className="text-blue-400 text-2xl font-bold mb-2">$30.25</div>
+                    <div className="text-slate-300 font-medium">Avg Lead Cost</div>
+                    <div className="text-slate-400 text-sm">4x higher than competitors</div>
+                    <div className="mt-2 bg-slate-700/50 rounded-full h-2">
+                      <div className="bg-blue-400 h-2 rounded-full w-[85%]"></div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-700/50">
+                    <div className="text-purple-400 text-2xl font-bold mb-2">2.4x</div>
+                    <div className="text-slate-300 font-medium">ROI Multiplier</div>
+                    <div className="text-slate-400 text-sm">Premium leads outperform</div>
+                    <div className="mt-2 bg-slate-700/50 rounded-full h-2">
+                      <div className="bg-purple-400 h-2 rounded-full w-[88%]"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Other tabs */}
+          {!['overview', 'my-leads', 'marketplace', 'analytics'].includes(activeTab) && (
+            <div className="text-center py-16">
+              <div className="w-16 h-16 bg-yellow-400/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Crown className="w-8 h-8 text-yellow-400" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">{activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}</h3>
+              <p className="text-slate-400">This feature is coming soon!</p>
+            </div>
+          )}
+        </main>
+      </div>
+
+      {/* Lead Detail Modal */}
+      {showLeadModal && selectedLead && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-slate-900 border border-slate-700 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-6 border-b border-slate-700">
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-xl flex items-center justify-center text-slate-900 font-bold text-lg">
+                  {selectedLead.name.split(' ').map(n => n[0]).join('')}
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold text-white">{selectedLead.name}</h2>
+                  <p className="text-slate-400">Lead ID: {selectedLead.id}</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowLeadModal(false)}
+                className="w-8 h-8 bg-slate-800 hover:bg-slate-700 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6 space-y-6">
+              {/* Status and Quality Header */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <span className={`px-3 py-1 rounded-lg text-sm font-medium ${
+                    selectedLead.status === 'new' ? 'bg-red-500/20 text-red-400' :
+                    selectedLead.status === 'contacted' ? 'bg-blue-500/20 text-blue-400' :
+                    selectedLead.status === 'appointment' ? 'bg-purple-500/20 text-purple-400' :
+                    'bg-green-500/20 text-green-400'
+                  }`}>
+                    {selectedLead.status === 'new' ? '🔴 New Lead' :
+                     selectedLead.status === 'contacted' ? '📞 Called' :
+                     selectedLead.status === 'appointment' ? '📅 Appointment' :
+                     '💰 Sold'}
+                  </span>
+                  <span className="px-3 py-1 bg-purple-500/20 text-purple-300 rounded-lg">
+                    {selectedLead.type}
+                  </span>
+                  <div className="flex items-center space-x-1 bg-yellow-400/20 border border-yellow-400/30 rounded-lg px-3 py-1">
+                    <Star className="text-yellow-400 fill-current" size={16} />
+                    <span className="font-bold text-yellow-300">{selectedLead.quality}</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <button 
+                    onClick={() => {
+                      setShowModal(true);
+                      setSelectedLead(lead);
+                    }}
+                    className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center"
+                  >
+                    <Phone className="mr-2" size={16} />
+                    Get Contact Info
+                  </button>
+                  <button 
+                    onClick={() => {
+                      setShowModal(true);
+                      setSelectedLead(lead);
+                    }}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center"
+                  >
+                    <Mail className="mr-2" size={16} />
+                    Get Email
+                  </button>
+                </div>
+              </div>
+
+              {/* Contact Information Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <h3 className="text-lg font-bold text-white mb-3">Contact Information</h3>
+                  
+                  <div className="bg-slate-800/50 rounded-xl p-4 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-400">Full Name:</span>
+                      <span className="text-white font-medium">{selectedLead.name}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-400">Phone:</span>
+                      <div className="flex items-center space-x-2">
+                        <Phone className="w-4 h-4 text-green-400" />
+                        <span className="text-white font-mono">{selectedLead.phone}</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-400">Email:</span>
+                      <div className="flex items-center space-x-2">
+                        <Mail className="w-4 h-4 text-blue-400" />
+                        <span className="text-white">{selectedLead.email}</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-400">Location:</span>
+                      <div className="flex items-center space-x-2">
+                        <MapPin className="w-4 h-4 text-purple-400" />
+                        <span className="text-white">{selectedLead.location}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <h3 className="text-lg font-bold text-white mb-3">Lead Intelligence</h3>
+                  
+                  <div className="bg-slate-800/50 rounded-xl p-4 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-400">Quality Score:</span>
+                      <div className="flex items-center space-x-2">
+                        <div className="w-16 h-2 bg-slate-700 rounded-full overflow-hidden">
+                          <div 
+                            className="h-full bg-gradient-to-r from-yellow-400 to-green-400"
+                            style={{ width: `${selectedLead.quality}%` }}
+                          />
+                        </div>
+                        <span className="text-yellow-400 font-bold">{selectedLead.quality}/100</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-400">Conversion Est:</span>
+                      <span className="text-green-400 font-bold">{Math.floor(selectedLead.quality * 0.95)}%</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-400">Purchase Price:</span>
+                      <span className="text-white font-bold">${selectedLead.price}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-400">Lead Type:</span>
+                      <span className="text-purple-300">{selectedLead.type}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-400">Purchased:</span>
+                      <span className="text-slate-300">{selectedLead.purchasedAt}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Timeline */}
+              <div>
+                <h3 className="text-lg font-bold text-white mb-3">Action Timeline</h3>
+                <div className="bg-slate-800/50 rounded-xl p-4">
+                  <div className="space-y-3">
+                    <div className="flex items-start space-x-3">
+                      <div className="w-8 h-8 bg-green-500/20 rounded-full flex items-center justify-center">
+                        <ShoppingCart className="w-4 h-4 text-green-400" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="text-white font-medium">Lead Purchased</div>
+                        <div className="text-slate-400 text-sm">Lead acquired from premium marketplace</div>
+                        <div className="text-slate-500 text-xs">{selectedLead.purchasedAt}</div>
+                      </div>
+                    </div>
+                    
+                    {selectedLead.status === 'contacted' && (
+                      <div className="flex items-start space-x-3">
+                        <div className="w-8 h-8 bg-blue-500/20 rounded-full flex items-center justify-center">
+                          <Phone className="w-4 h-4 text-blue-400" />
+                        </div>
+                        <div className="flex-1">
+                          <div className="text-white font-medium">First Contact Made</div>
+                          <div className="text-slate-400 text-sm">Initial phone call completed</div>
+                          <div className="text-slate-500 text-xs">1 hour ago</div>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="flex items-start space-x-3">
+                      <div className="w-8 h-8 bg-yellow-500/20 rounded-full flex items-center justify-center">
+                        <Timer className="w-4 h-4 text-yellow-400" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="text-white font-medium">Next Action Required</div>
+                        <div className="text-slate-400 text-sm">
+                          {selectedLead.status === 'new' 
+                            ? 'Make initial contact within 15 minutes for optimal conversion'
+                            : 'Schedule follow-up call or appointment'
+                          }
+                        </div>
+                        <div className="text-slate-500 text-xs">Pending</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Notes Section */}
+              <div>
+                <h3 className="text-lg font-bold text-white mb-3">Lead Notes</h3>
+                <div className="bg-slate-800/50 rounded-xl p-4">
+                  <textarea
+                    placeholder="Add your notes about this lead..."
+                    className="w-full bg-slate-700/50 border border-slate-600/50 rounded-lg p-3 text-white placeholder-slate-400 resize-none focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500/50"
+                    rows={4}
+                  />
+                  <div className="flex justify-between items-center mt-3">
+                    <span className="text-slate-400 text-sm">Notes are automatically saved</span>
+                    <button className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                      Save Note
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Quick Actions */}
+              <div>
+                <h3 className="text-lg font-bold text-white mb-3">Quick Actions</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  <button className="bg-green-600 hover:bg-green-700 text-white p-3 rounded-lg font-medium transition-colors flex items-center justify-center">
+                    <Phone className="mr-2" size={16} />
+                    Call Lead
+                  </button>
+                  <button className="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-lg font-medium transition-colors flex items-center justify-center">
+                    <Mail className="mr-2" size={16} />
+                    Send Email
+                  </button>
+                  <button className="bg-purple-600 hover:bg-purple-700 text-white p-3 rounded-lg font-medium transition-colors flex items-center justify-center">
+                    <Calendar className="mr-2" size={16} />
+                    Schedule
+                  </button>
+                  <button className="bg-slate-700 hover:bg-slate-600 text-white p-3 rounded-lg font-medium transition-colors flex items-center justify-center">
+                    <Download className="mr-2" size={16} />
+                    Export
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
